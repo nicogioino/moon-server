@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
@@ -9,17 +10,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
-
     @Column(name = "username", nullable = false, unique = true)
+    @Size(min= 3, max= 16)
     private String username;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "biography", nullable = true)
+    @Size( max= 100)
     private String bio;
 
     @Column(name = "password", nullable = false)
+    @Size(min=8, max =20)
     private String password;
 
     public User(String username, String mail, String password) {
