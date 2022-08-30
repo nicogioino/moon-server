@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @RestController
 @RequestMapping(path= "/user")
 public class UserController {
@@ -17,8 +19,20 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PostMapping
+    public ResponseEntity<?> createStudent(@RequestBody User user){
+        try{
+            userInputValidator.checkCreationInput(user);
+            User temp = userService.create(user);
+            return ResponseEntity.created(new URI("/user/" + temp.getId())).body(temp);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            // .build()
+        }
+    }
+
     @RequestMapping( method = RequestMethod.PUT, path = "{userId}" )
-    public   ResponseEntity<User> updateStudent(@PathVariable("userId") Long userId,
+    public   ResponseEntity<?> updateStudent(@PathVariable("userId") Long userId,
                                                 @RequestBody(required = false) UserUpdateDTO userUpdateDTO
                               ) {
         try {
@@ -26,7 +40,7 @@ public class UserController {
             User user = userService.updateUser(userId,userUpdateDTO);
             return new ResponseEntity<>(user, HttpStatus.OK);
         }catch (Error e){
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
 

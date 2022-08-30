@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class UserService {
     private final UserRepository userRepository;
@@ -33,5 +35,11 @@ public class UserService {
         }
         userRepository.save(user);
         return user;
+    }
+
+    public User create(User user) {
+        Optional<User> search = userRepository.findByEmail(user.getEmail());
+        if(search.isEmpty()) return userRepository.save(user);
+        else throw new IllegalStateException("User already exists");
     }
 }
