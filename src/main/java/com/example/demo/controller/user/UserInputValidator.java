@@ -22,16 +22,19 @@ public class UserInputValidator {
     }
 
     public boolean checkCreationInput(User user){
-        final Utils utils = new Utils();
         if(user.getUsername() != null){
-            if( ! utils.checkString(user.getUsername(),3, 16))
+            if( ! Utils.checkString(user.getUsername(),3, 16))
                 throw new Error("Invalid fields");
-
+        }
+        if(user.getBio() != null){
+            if(! Utils.checkString(user.getBio(),0, 100))
+                throw new Error("Invalid fields");
         }
         if(user.getPassword() != null){
-            if( !utils.checkString(user.getPassword(),8, 20))
+            if( !Utils.checkString(user.getPassword(),8, 20))
                 throw new Error("Invalid fields");
         }
+        if(!Utils.isEmail(user.getEmail())) throw new IllegalArgumentException("Input is not an email");
         return true;
     }
 

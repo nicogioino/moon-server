@@ -24,6 +24,7 @@ public class UserController {
         try{
             userInputValidator.checkCreationInput(user);
             User temp = userService.create(user);
+            //   return new ResponseEntity<>("User created successfully", HttpStatus.CREATED);
             return ResponseEntity.created(new URI("/user/" + temp.getId())).body(temp);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
