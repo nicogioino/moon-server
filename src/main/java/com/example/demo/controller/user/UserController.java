@@ -18,7 +18,7 @@ public class UserController {
     }
 
     @RequestMapping( method = RequestMethod.PUT, path = "{userId}" )
-    public   ResponseEntity<User> updateStudent(@PathVariable("userId") Long userId,
+    public   ResponseEntity<?> updateStudent(@PathVariable("userId") Long userId,
                                                 @RequestBody(required = false) UserUpdateDTO userUpdateDTO
                               ) {
         try {
@@ -26,7 +26,7 @@ public class UserController {
             User user = userService.updateUser(userId,userUpdateDTO);
             return new ResponseEntity<>(user, HttpStatus.OK);
         }catch (Error e){
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
         }
 
 

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class UserService {
     private final UserRepository userRepository;
@@ -33,5 +35,11 @@ public class UserService {
         }
         userRepository.save(user);
         return user;
+    }
+    public List<User> findAll(){
+        return userRepository.findAll();
+    }
+    public User createUser(User user){
+        return userRepository.save(user);
     }
 }
