@@ -20,27 +20,25 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createStudent(@RequestBody User user){
+    public ResponseEntity<?> createUser(@RequestBody User poosibleBody){
         try{
-            userInputValidator.checkCreationInput(user);
-            User temp = userService.create(user);
-            //   return new ResponseEntity<>("User created successfully", HttpStatus.CREATED);
-            return ResponseEntity.created(new URI("/user/" + temp.getId())).body(temp);
+            userInputValidator.checkCreationInput(poosibleBody);
+            User user = userService.create(poosibleBody);
+            return ResponseEntity.created(new URI("/user/" + user.getId())).body(user);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-            // .build()
         }
     }
 
     @RequestMapping( method = RequestMethod.PUT, path = "{userId}" )
-    public   ResponseEntity<?> updateStudent(@PathVariable("userId") Long userId,
+    public   ResponseEntity<?> updateUser(@PathVariable("userId") Long userId,
                                                 @RequestBody(required = false) UserUpdateDTO userUpdateDTO
                               ) {
         try {
             userInputValidator.checkUpdateInput(userUpdateDTO);
             User user = userService.updateUser(userId,userUpdateDTO);
             return new ResponseEntity<>(user, HttpStatus.OK);
-        }catch (Error e){
+        }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 

@@ -38,7 +38,7 @@ public class UserService {
     }
 
     public User create(User user) {
-        Optional<User> search = userRepository.findByEmail(user.getEmail());
+        Optional<User> search = userRepository.getUserByEmailOrUsername(user.getEmail(), user.getUsername());
         if(search.isEmpty()) return userRepository.save(user);
         else throw new IllegalStateException("User already exists");
     }
