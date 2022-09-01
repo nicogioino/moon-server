@@ -27,7 +27,7 @@ public class UserInputValidator {
         else {
             if (!Utils.checkString(user.getUsername(), 3, 16))
                 throw new Exception("Invalid fields");
-            if(user.getEmail() != null){
+            if(user.getBio() != null){
                 if (!Utils.checkString(user.getBio(), 0, 100))
                     throw new Exception("Invalid fields");
             }

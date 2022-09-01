@@ -23,9 +23,10 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody User poosibleBody){
         try{
+            System.out.println("hola1");
             userInputValidator.checkCreationInput(poosibleBody);
             User user = userService.create(poosibleBody);
-            return ResponseEntity.created(new URI("/user/" + user.getId())).body(user);
+            return new ResponseEntity<>(user, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
