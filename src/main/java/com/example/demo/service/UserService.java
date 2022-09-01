@@ -42,4 +42,5 @@ public class UserService {
         if(search.isEmpty()) return userRepository.save(user);
         else throw new IllegalStateException("User already exists");
     }
+
 }
