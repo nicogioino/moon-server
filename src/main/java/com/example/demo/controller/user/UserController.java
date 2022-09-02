@@ -23,7 +23,6 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody User poosibleBody){
         try{
-            System.out.println("hola1");
             userInputValidator.checkCreationInput(poosibleBody);
             User user = userService.create(poosibleBody);
             return new ResponseEntity<>(user, HttpStatus.CREATED);
