@@ -42,4 +42,10 @@ public class UserService {
         if(search.isEmpty()) return userRepository.save(user);
         else throw new IllegalStateException("User already exists");
     }
+
+    public User getUserById(Long id ){
+        Optional<User> user =  userRepository.findById(id);
+        if(!user.isEmpty()) return user.get();
+        else throw new IllegalStateException("User does not exist");
+    }
 }

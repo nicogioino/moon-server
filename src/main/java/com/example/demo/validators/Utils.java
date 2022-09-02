@@ -1,4 +1,4 @@
-package com.example.demo.controller.user;
+package com.example.demo.validators;
 
 import java.util.regex.Pattern;
 

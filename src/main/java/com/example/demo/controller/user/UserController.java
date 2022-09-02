@@ -2,12 +2,11 @@ package com.example.demo.controller.user;
 
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
+import com.example.demo.validators.UserInputValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
 
 @RestController
 @CrossOrigin(origins= "*")
@@ -20,10 +19,9 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
+    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> createUser(@RequestBody User poosibleBody){
         try{
-            System.out.println("hola1");
             userInputValidator.checkCreationInput(poosibleBody);
             User user = userService.create(poosibleBody);
             return new ResponseEntity<>(user, HttpStatus.CREATED);

@@ -1,5 +1,6 @@
-package com.example.demo.controller.user;
+package com.example.demo.validators;
 
+import com.example.demo.controller.user.UserUpdateDTO;
 import com.example.demo.model.User;
 
 public class UserInputValidator {

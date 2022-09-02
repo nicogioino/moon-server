@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -21,6 +22,11 @@ public class User {
     @Size( max= 100)
     private String bio;
 
+    @OneToMany(mappedBy="user")
+    private Set<Post> posts;
+
+    @OneToMany(mappedBy="user")
+    private Set<Tag> tags;
     @Column(name = "password", nullable = false)
     @Size(min=8, max =20)
     private String password;
