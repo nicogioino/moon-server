@@ -21,7 +21,7 @@ public class UserInputValidator {
         return true;
     }
 
-    public boolean checkCreationInput(User user) throws Exception {
+    public boolean checkCreationInput(UserCreationDTO user) throws Exception {
         if (user.getUsername() == null || user.getPassword() == null || user.getEmail() == null)
             throw new Exception("Missing fields");
         else {
@@ -38,4 +38,14 @@ public class UserInputValidator {
         }
     }
 
+//    public void checkLoginInput(LoginRequest req) {
+//        if (req.getPrincipal() == null || req.getCredential() == null)
+//            throw new IllegalArgumentException("Missing fields");
+//        else {
+//            if (!Utils.checkString(req.getPrincipal(), 3, 16))
+//                throw new IllegalArgumentException("Invalid fields");
+//            if (!Utils.checkString(req.getCredential(), 8, 20))
+//                throw new IllegalArgumentException("Invalid fields");
+//        }
+//    }
 }

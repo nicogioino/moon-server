@@ -21,15 +21,17 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody User poosibleBody){
+    public ResponseEntity<?> createUser(@RequestBody UserCreationDTO possibleBody){
         try{
-            userInputValidator.checkCreationInput(poosibleBody);
-            User user = userService.create(poosibleBody);
+            userInputValidator.checkCreationInput(possibleBody);
+            User user = userService.create(possibleBody);
             return new ResponseEntity<>(user, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+
 
 
     @RequestMapping( method = RequestMethod.PUT, path = "{userId}" )

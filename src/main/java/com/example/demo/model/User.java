@@ -1,11 +1,15 @@
 package com.example.demo.model;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.util.Collection;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -22,7 +26,7 @@ public class User {
     private String bio;
 
     @Column(name = "password", nullable = false)
-    @Size(min=8, max =20)
+    @Size(min=8, max =255)
     private String password;
 
     public User(String username, String mail, String password) {
@@ -48,11 +52,36 @@ public class User {
 
     public String getEmail() {return email;}
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
     public String getPassword() {return password;}
 
     public void setPassword(String newPassword) { this.password = newPassword;}
 
     public String getUsername() {return username;}
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 
     public void setUsername(String username) {this.username = username;}
 
