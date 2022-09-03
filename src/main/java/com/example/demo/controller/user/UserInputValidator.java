@@ -21,7 +21,7 @@ public class UserInputValidator {
         return true;
     }
 
-    public boolean checkCreationInput(User user) throws Exception {
+    public boolean checkCreationInput(UserCreationDTO user) throws Exception {
         if (user.getUsername() == null || user.getPassword() == null || user.getEmail() == null)
             throw new Exception("Missing fields");
         else {

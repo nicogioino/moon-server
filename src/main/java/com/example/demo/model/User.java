@@ -26,7 +26,7 @@ public class User implements UserDetails {
     private String bio;
 
     @Column(name = "password", nullable = false)
-    @Size(min=8, max =20)
+    @Size(min=8, max =255)
     private String password;
 
     public User(String username, String mail, String password) {

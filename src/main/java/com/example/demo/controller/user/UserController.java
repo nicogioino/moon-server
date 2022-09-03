@@ -21,7 +21,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody User poosibleBody){
+    public ResponseEntity<?> createUser(@RequestBody UserCreationDTO poosibleBody){
         try{
             userInputValidator.checkCreationInput(poosibleBody);
             User user = userService.create(poosibleBody);

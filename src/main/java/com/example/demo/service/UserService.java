@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.controller.user.UserCreationDTO;
 import com.example.demo.controller.user.UserUpdateDTO;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
@@ -7,6 +8,7 @@ import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,6 +17,9 @@ import java.util.Optional;
 @Service
 public class UserService{
     private final UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -39,10 +44,27 @@ public class UserService{
         return user;
     }
 
-    public User create(User user) {
-        Optional<User> search = userRepository.getUserByEmailOrUsername(user.getEmail(), user.getUsername());
-        if(search.isEmpty()) return userRepository.save(user);
-        else throw new IllegalStateException("User already exists");
+    public User create(UserCreationDTO userDto) {
+//        Optional<User> search = userRepository.getUserByEmailOrUsername(userDto.getEmail(), userDto.getUsername());
+//        if(search.isEmpty()) return userRepository.save(user);
+//        else throw new IllegalStateException("User already exists");
+
+
+        if (accountAlreadyExists(userDto)) {
+            throw new IllegalStateException("User already exists");
+        }
+        User user = new User();
+        user.setUsername(userDto.getUsername());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setBio(userDto.getBio());
+
+        //user.setRole(new Role(Integer.valueOf(1), user));
+        return userRepository.save(user);
+    }
+
+    private boolean accountAlreadyExists(UserCreationDTO user) {
+        return userRepository.existsByEmail(user.getEmail()) || userRepository.existsByUsername(user.getUsername());
     }
 
 
