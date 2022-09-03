@@ -38,4 +38,14 @@ public class UserInputValidator {
         }
     }
 
+//    public void checkLoginInput(LoginRequest req) {
+//        if (req.getPrincipal() == null || req.getCredential() == null)
+//            throw new IllegalArgumentException("Missing fields");
+//        else {
+//            if (!Utils.checkString(req.getPrincipal(), 3, 16))
+//                throw new IllegalArgumentException("Invalid fields");
+//            if (!Utils.checkString(req.getCredential(), 8, 20))
+//                throw new IllegalArgumentException("Invalid fields");
+//        }
+//    }
 }
