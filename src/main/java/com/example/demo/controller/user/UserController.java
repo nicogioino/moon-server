@@ -18,12 +18,21 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
+    @RequestMapping(path = "/{userId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getUserById(@PathVariable("userId") Long userId){
+        try{
+            User user = userService.getUserById(userId);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> createUser(@RequestBody User poosibleBody){
+    public ResponseEntity<?> createUser(@RequestBody User possibleBody){
         try{
-            userInputValidator.checkCreationInput(poosibleBody);
-            User user = userService.create(poosibleBody);
+            userInputValidator.checkCreationInput(possibleBody);
+            User user = userService.create(possibleBody);
             return new ResponseEntity<>(user, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -32,9 +41,7 @@ public class UserController {
 
 
     @RequestMapping( method = RequestMethod.PUT, path = "{userId}" )
-    public   ResponseEntity<?> updateUser(@PathVariable("userId") Long userId,
-                                                @RequestBody(required = false) UserUpdateDTO userUpdateDTO
-                              ) {
+    public   ResponseEntity<?> updateUser(@PathVariable("userId") Long userId,@RequestBody(required = false) UserUpdateDTO userUpdateDTO) {
         try {
             userInputValidator.checkUpdateInput(userUpdateDTO);
             User user = userService.updateUser(userId,userUpdateDTO);

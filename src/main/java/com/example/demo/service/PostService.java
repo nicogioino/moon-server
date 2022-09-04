@@ -27,4 +27,29 @@ public class PostService {
         }
         return postRepository.save(post);
     }
+
+    public Post editPost(Long postId, PostCreation possiblePost, User user, Tag[] tags) {
+        return getPost(postId, possiblePost, tags);
+    }
+
+    private Post getPost(Long postId, PostCreation possiblePost, Tag[] tags) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "post with id " + postId + " does not exists"
+                ));
+        if(possiblePost.getTitle() != null){
+            post.setTitle(possiblePost.getTitle());
+        }
+        if(possiblePost.getText() != null){
+            post.setText(possiblePost.getText());
+        }
+        if(tags != null){
+            post.getTags().clear();
+            for (Tag tag : tags) {
+                post.getTags().add(tag);
+            }
+        }
+        postRepository.save(post);
+        return post;
+    }
 }
