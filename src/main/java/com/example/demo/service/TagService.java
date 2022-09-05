@@ -32,4 +32,13 @@ public class TagService {
         }
         return respondedTags;
     }
+    public String[] getNameOfTags(){
+        Optional<String[]> tags= tagRepository.getAllTagsNames();
+        if(tags.isEmpty()){
+            String[] emptyTags= new String[0];
+            return emptyTags;
+        }else{
+            return tags.get();
+        }
+    }
 }
