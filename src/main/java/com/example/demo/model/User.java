@@ -1,7 +1,11 @@
 package com.example.demo.model;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.util.Collection;
 
 @Entity
 @Table(name = "users")
@@ -22,7 +26,7 @@ public class User {
     private String bio;
 
     @Column(name = "password", nullable = false)
-    @Size(min=8, max =20)
+    @Size(min=8, max =255)
     private String password;
 
     public User(String username, String mail, String password) {

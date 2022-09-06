@@ -1,6 +1,8 @@
-package com.example.demo.controller.user;
+package com.example.demo.utils;
 
-import com.example.demo.model.User;
+import com.example.demo.dto.user.UserCreationDTO;
+import com.example.demo.dto.user.UserUpdateDTO;
+import com.example.demo.utils.Utils;
 
 public class UserInputValidator {
     public boolean checkUpdateInput(UserUpdateDTO userUpdateDTO) throws Exception {
@@ -21,13 +23,13 @@ public class UserInputValidator {
         return true;
     }
 
-    public boolean checkCreationInput(User user) throws Exception {
+    public boolean checkCreationInput(UserCreationDTO user) throws Exception {
         if (user.getUsername() == null || user.getPassword() == null || user.getEmail() == null)
             throw new Exception("Missing fields");
         else {
             if (!Utils.checkString(user.getUsername(), 3, 16))
                 throw new Exception("Invalid fields");
-            if(user.getEmail() != null){
+            if(user.getBio() != null){
                 if (!Utils.checkString(user.getBio(), 0, 100))
                     throw new Exception("Invalid fields");
             }
@@ -38,4 +40,14 @@ public class UserInputValidator {
         }
     }
 
+//    public void checkLoginInput(LoginRequest req) {
+//        if (req.getPrincipal() == null || req.getCredential() == null)
+//            throw new IllegalArgumentException("Missing fields");
+//        else {
+//            if (!Utils.checkString(req.getPrincipal(), 3, 16))
+//                throw new IllegalArgumentException("Invalid fields");
+//            if (!Utils.checkString(req.getCredential(), 8, 20))
+//                throw new IllegalArgumentException("Invalid fields");
+//        }
+//    }
 }
