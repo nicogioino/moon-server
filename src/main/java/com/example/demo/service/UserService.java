@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.controller.user.UserCreationDTO;
-import com.example.demo.controller.user.UserUpdateDTO;
+import com.example.demo.dto.user.UserCreationDTO;
+import com.example.demo.dto.user.UserUpdateDTO;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 
@@ -10,8 +10,6 @@ import org.springframework.data.jpa.repository.Modifying;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 
 @Service

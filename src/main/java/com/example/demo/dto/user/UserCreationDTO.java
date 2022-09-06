@@ -1,4 +1,4 @@
-package com.example.demo.controller.user;
+package com.example.demo.dto.user;
 
 public class UserCreationDTO {
     private String username;

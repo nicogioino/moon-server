@@ -1,6 +1,8 @@
-package com.example.demo.controller.user;
+package com.example.demo.utils;
 
-import com.example.demo.model.User;
+import com.example.demo.dto.user.UserCreationDTO;
+import com.example.demo.dto.user.UserUpdateDTO;
+import com.example.demo.utils.Utils;
 
 public class UserInputValidator {
     public boolean checkUpdateInput(UserUpdateDTO userUpdateDTO) throws Exception {

@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.demo.controller.auth;
 
 import com.example.demo.model.auth.AuthenticationRequest;
 import com.example.demo.model.auth.AuthenticationResponse;
@@ -18,14 +18,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private UserDetailsService userDetailsService;
-    @Autowired
-    private JwtUtil jwtTokenUtil;
-    @Autowired
-    private UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsService userDetailsService;
+    private final JwtUtil jwtTokenUtil;
+
+    public AuthController(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JwtUtil jwtTokenUtil) {
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
 
     @RequestMapping (method = RequestMethod.POST, path = "/login")
     public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest) {
