@@ -5,6 +5,7 @@ import com.example.demo.dto.user.UserUpdateDTO;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 
+import com.example.demo.security.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService{
     private final UserRepository userRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -40,6 +44,14 @@ public class UserService{
         }
         userRepository.save(user);
         return user;
+    }
+
+    public User findUserByUsername(String header) {
+        String token = header.substring(7);
+        String username = jwtUtil.extractUsername(token);
+        return userRepository.getUserByUsername(username).orElseThrow(() -> new IllegalStateException(
+                "user with username " + username + " does not exists"
+        ));
     }
 
     public User create(UserCreationDTO userDto) {

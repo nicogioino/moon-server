@@ -34,7 +34,6 @@ public class UserController {
         }
     }
 
-
     @RequestMapping(method = RequestMethod.PUT, path = "{userId}")
     public ResponseEntity<?> updateUser(@PathVariable("userId") Long userId,
                                         @RequestBody(required = false) UserUpdateDTO userUpdateDTO
@@ -46,8 +45,7 @@ public class UserController {
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-
-
     }
+
 
 }
