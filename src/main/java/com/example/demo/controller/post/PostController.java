@@ -44,7 +44,7 @@ public class PostController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(path = "{postId}/edit", method = RequestMethod.PATCH)
+    @RequestMapping(path = "/edit/{postId}", method = RequestMethod.PATCH)
     public ResponseEntity<?> editPost(@PathVariable("postId") Long postId, @RequestBody PostCreation possiblePost){
         try{
             postInputValidator.checkCreatePost(possiblePost, 1);
