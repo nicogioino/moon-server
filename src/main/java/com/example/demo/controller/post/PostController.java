@@ -1,5 +1,6 @@
 package com.example.demo.controller.post;
 
+import com.example.demo.dto.post.PostDTO;
 import com.example.demo.model.Post;
 import com.example.demo.model.Tag;
 import com.example.demo.model.User;
@@ -11,9 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins= "*")
@@ -32,11 +30,10 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createPost(@RequestBody PostCreation possiblePost ){
+    public ResponseEntity<?> createPost(@RequestBody PostDTO possiblePost, @RequestHeader String Authorization ){
         try{
-            postInputValidator.checkCreatePost(possiblePost, 1);
-            Long id = Long.valueOf(1);
-            User user = userService.getUserById(id);
+            User user = userService.findUserByUsername(Authorization);
+            postInputValidator.checkCreatePost(possiblePost);
             Tag[] tags = tagService.createTags(possiblePost.getTags(), user);
             Post post = postService.create(possiblePost, user, tags);
             return new ResponseEntity<>(post, HttpStatus.CREATED);

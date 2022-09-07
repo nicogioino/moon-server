@@ -34,14 +34,13 @@ public class UserController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.PUT, path = "{userId}")
-    public ResponseEntity<?> updateUser(@PathVariable("userId") Long userId,
-                                        @RequestBody(required = false) UserUpdateDTO userUpdateDTO
-    ) {
+    @RequestMapping(method = RequestMethod.PUT)
+    public ResponseEntity<?> updateUser(@RequestBody(required = false) UserUpdateDTO userUpdateDTO, @RequestHeader String Authorization) {
         try {
+            User user = userService.findUserByUsername(Authorization);
             userInputValidator.checkUpdateInput(userUpdateDTO);
-            User user = userService.updateUser(userId, userUpdateDTO);
-            return new ResponseEntity<>(UserListingDTO.fromUser(user), HttpStatus.OK);
+            User response = userService.updateUser(user, userUpdateDTO);
+            return new ResponseEntity<>(UserListingDTO.fromUser(response), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
