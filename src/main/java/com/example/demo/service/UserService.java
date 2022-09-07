@@ -12,6 +12,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 @Service
 public class UserService{
@@ -28,11 +30,7 @@ public class UserService{
     }
 
     @Modifying
-    public User updateUser(Long userId, UserUpdateDTO userUpdateDTO) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "user with id " + userId + " does not exists"
-                ));
+    public User updateUser(User user, UserUpdateDTO userUpdateDTO) {
         if(userUpdateDTO.getUsername() != null){
             user.setUsername(userUpdateDTO.getUsername());
         }
@@ -46,20 +44,8 @@ public class UserService{
         return user;
     }
 
-    public User findUserByUsername(String header) {
-        String token = header.substring(7);
-        String username = jwtUtil.extractUsername(token);
-        return userRepository.getUserByUsername(username).orElseThrow(() -> new IllegalStateException(
-                "user with username " + username + " does not exists"
-        ));
-    }
 
     public User create(UserCreationDTO userDto) {
-//        Optional<User> search = userRepository.getUserByEmailOrUsername(userDto.getEmail(), userDto.getUsername());
-//        if(search.isEmpty()) return userRepository.save(user);
-//        else throw new IllegalStateException("User already exists");
-
-
         if (accountAlreadyExists(userDto)) {
             throw new IllegalStateException("User already exists");
         }
@@ -68,8 +54,6 @@ public class UserService{
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setBio(userDto.getBio());
-
-        //user.setRole(new Role(Integer.valueOf(1), user));
         return userRepository.save(user);
     }
 
@@ -77,29 +61,20 @@ public class UserService{
         return userRepository.existsByEmail(user.getEmail()) || userRepository.existsByUsername(user.getUsername());
     }
 
+    public User getUserById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if(user.isEmpty()){
+            throw new IllegalStateException("User does not exists");
+        }else{
+            return user.get();
+        }
+    }
+    public User findUserByUsername(String header) {
+        String token = header.substring(7);
+        String username = jwtUtil.extractUsername(token);
+        return userRepository.getUserByUsername(username).orElseThrow(() -> new IllegalStateException(
+                "user with username " + username + " does not exists"
+        ));
+    }
 
-
-
-
-//    public ResponseEntity<?> register(LoginRequest signUpRequest) { //A new user needs to be registered with all the fields
-//        if (userRepository.existsByUsername(signUpRequest.getPrincipal())) {
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body("Error: Username is already taken!");
-//        }
-//
-//        if (userRepository.existsByEmail(signUpRequest.getPrincipal())) {
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body("Error: Email is already in use!");
-//        }
-//
-//        // Create new user's account
-//        User user = new User(signUpRequest.getPrincipal(), //All fields are required. Throws SQL Error
-//                signUpRequest.getCredential());
-//
-//        userRepository.save(user);
-//
-//        return authenticate(signUpRequest);
-//    }
 }

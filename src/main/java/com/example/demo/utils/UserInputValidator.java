@@ -2,7 +2,6 @@ package com.example.demo.utils;
 
 import com.example.demo.dto.user.UserCreationDTO;
 import com.example.demo.dto.user.UserUpdateDTO;
-import com.example.demo.utils.Utils;
 
 public class UserInputValidator {
     public boolean checkUpdateInput(UserUpdateDTO userUpdateDTO) throws Exception {
@@ -39,15 +38,4 @@ public class UserInputValidator {
             return true;
         }
     }
-
-//    public void checkLoginInput(LoginRequest req) {
-//        if (req.getPrincipal() == null || req.getCredential() == null)
-//            throw new IllegalArgumentException("Missing fields");
-//        else {
-//            if (!Utils.checkString(req.getPrincipal(), 3, 16))
-//                throw new IllegalArgumentException("Invalid fields");
-//            if (!Utils.checkString(req.getCredential(), 8, 20))
-//                throw new IllegalArgumentException("Invalid fields");
-//        }
-//    }
 }
