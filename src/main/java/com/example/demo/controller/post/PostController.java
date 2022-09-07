@@ -41,12 +41,12 @@ public class PostController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
     @RequestMapping(path = "/edit/{postId}", method = RequestMethod.PATCH)
-    public ResponseEntity<?> editPost(@PathVariable("postId") Long postId, @RequestBody PostCreation possiblePost){
+    public ResponseEntity<?> editPost(@PathVariable("postId") Long postId, @RequestBody PostDTO possiblePost, @RequestHeader String Authorization){
         try{
-            postInputValidator.checkCreatePost(possiblePost, 1);
-            Long id = Long.valueOf(1);
-            User user = userService.getUserById(id);
+            User user = userService.findUserByUsername(Authorization);
+            postInputValidator.checkCreatePost(possiblePost);
             Tag[] tags = tagService.createTags(possiblePost.getTags(), user);
             Post post = postService.editPost(postId, possiblePost, user, tags);
             return new ResponseEntity<>(post, HttpStatus.CREATED);
