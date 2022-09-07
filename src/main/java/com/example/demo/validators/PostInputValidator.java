@@ -1,12 +1,11 @@
 package com.example.demo.validators;
 
-import com.example.demo.controller.post.PostCreation;
-import com.example.demo.model.Post;
+import com.example.demo.dto.post.PostDTO;
 
 public class PostInputValidator {
 
-    public boolean checkCreatePost(PostCreation post, Integer userId) throws Exception {
-        if (post.getText() == null || post.getTitle() == null || userId == null)
+    public boolean checkCreatePost(PostDTO post) throws Exception {
+        if (post.getText() == null || post.getTitle() == null )
             throw new Exception("Missing fields");
         else{
             if(post.getTags().length > 5) throw new Exception("To many tags");

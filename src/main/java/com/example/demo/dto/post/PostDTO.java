@@ -1,11 +1,11 @@
-package com.example.demo.controller.post;
+package com.example.demo.dto.post;
 
-public class PostCreation {
+public class PostDTO {
     private String text;
     private String title;
     private String[] tags;
 
-    public PostCreation(String text, String title, String[] tags) {
+    public PostDTO(String text, String title, String[] tags) {
         this.text = text;
         this.title = title;
         this.tags = tags;

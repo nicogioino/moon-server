@@ -1,4 +1,4 @@
-package com.example.demo.validators;
+package com.example.demo.utils;
 
 import java.util.regex.Pattern;
 

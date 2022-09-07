@@ -1,7 +1,7 @@
-package com.example.demo.validators;
+package com.example.demo.utils;
 
-import com.example.demo.controller.user.UserUpdateDTO;
-import com.example.demo.model.User;
+import com.example.demo.dto.user.UserCreationDTO;
+import com.example.demo.dto.user.UserUpdateDTO;
 
 public class UserInputValidator {
     public boolean checkUpdateInput(UserUpdateDTO userUpdateDTO) throws Exception {
@@ -22,7 +22,7 @@ public class UserInputValidator {
         return true;
     }
 
-    public boolean checkCreationInput(User user) throws Exception {
+    public boolean checkCreationInput(UserCreationDTO user) throws Exception {
         if (user.getUsername() == null || user.getPassword() == null || user.getEmail() == null)
             throw new Exception("Missing fields");
         else {
@@ -38,5 +38,4 @@ public class UserInputValidator {
             return true;
         }
     }
-
 }
