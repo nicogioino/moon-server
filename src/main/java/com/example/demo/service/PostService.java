@@ -25,14 +25,12 @@ public class PostService {
     }
 
     public Post editPost(Long postId, PostDTO possiblePost, User user, Tag[] tags) {
-        return getPost(postId, possiblePost, tags, user);
+        return edit(postId, possiblePost, tags, user);
     }
 
-    private Post getPost(Long postId, PostDTO possiblePost, Tag[] tags, User user) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "post with id " + postId + " does not exists"
-                ));
+    private Post edit(Long postId, PostDTO possiblePost, Tag[] tags, User user) {
+        Post post = getPost(postId);
+
         if (belongsToUser(user, post)) {
             if(possiblePost.getTitle() != null){
                 post.setTitle(possiblePost.getTitle());
@@ -53,4 +51,11 @@ public class PostService {
     }
 
     private boolean belongsToUser(User user, Post post) {return user.getId().equals(post.getUser().getId());}
+
+    private Post getPost(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "post with id " + postId + " does not exists"
+                ));
+    }
 }
