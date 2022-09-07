@@ -38,8 +38,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                .authorizeRequests().antMatchers("/login").permitAll()
-                .antMatchers(HttpMethod.POST, "/user").permitAll()
+                .authorizeRequests().antMatchers("/login/").permitAll()
+                .antMatchers(HttpMethod.POST, "/user/").permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
