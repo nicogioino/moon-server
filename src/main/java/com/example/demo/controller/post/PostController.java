@@ -49,7 +49,7 @@ public class PostController {
         try{
             User user = userService.findUserByUsername(Authorization);
             postInputValidator.checkCreatePost(possiblePost);
-            Tag[] tags = tagService.createTags(possiblePost.getTags(), user);
+            Tag[] tags = tagService.createTags(possiblePost.getTags(), user).toArray(new Tag[0]);
             Post post = postService.editPost(postId, possiblePost, user, tags);
             return new ResponseEntity<>(post, HttpStatus.CREATED);
         } catch (Exception e) {

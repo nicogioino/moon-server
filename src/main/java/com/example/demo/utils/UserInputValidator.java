@@ -24,17 +24,17 @@ public class UserInputValidator {
 
     public boolean checkCreationInput(UserCreationDTO user) throws Exception {
         if (user.getUsername() == null || user.getPassword() == null || user.getEmail() == null)
-            throw new Exception("Missing fields");
+            throw new Exception("Campos faltantes");
         else {
             if (!Utils.checkString(user.getUsername(), 3, 16))
-                throw new Exception("Invalid fields");
+                throw new Exception("El nombre de usuario debe tener entre 3 y 16 caracteres");
             if(user.getBio() != null){
                 if (!Utils.checkString(user.getBio(), 0, 100))
-                    throw new Exception("Invalid fields");
+                    throw new Exception("Largo maximo de la Bio 100 caracteres");
             }
             if (!Utils.checkString(user.getPassword(), 8, 20))
-                throw new Exception("Invalid fields");
-            if (!Utils.isEmail(user.getEmail())) throw new IllegalArgumentException("Input is not an email");
+                throw new Exception("La contraseña debe tener entre 8 y 20 caracteres");
+            if (!Utils.isEmail(user.getEmail())) throw new IllegalArgumentException("Formato de email invalido");
             return true;
         }
     }

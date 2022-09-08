@@ -46,8 +46,11 @@ public class UserService{
 
 
     public User create(UserCreationDTO userDto) {
-        if (accountAlreadyExists(userDto)) {
-            throw new IllegalStateException("User already exists");
+        if (usernameAlreadyExists(userDto)) {
+            throw new IllegalStateException("Nombre de usuario no disponible");
+        }
+        if (emailAlreadyExists(userDto)) {
+            throw new IllegalStateException("Email no disponible");
         }
         User user = new User();
         user.setUsername(userDto.getUsername());
@@ -57,8 +60,12 @@ public class UserService{
         return userRepository.save(user);
     }
 
-    private boolean accountAlreadyExists(UserCreationDTO user) {
-        return userRepository.existsByEmail(user.getEmail()) || userRepository.existsByUsername(user.getUsername());
+    private boolean usernameAlreadyExists(UserCreationDTO user) {
+        return userRepository.existsByUsername(user.getUsername());
+    }
+
+    private boolean emailAlreadyExists(UserCreationDTO user) {
+        return userRepository.existsByEmail(user.getEmail());
     }
 
     public User getUserById(Long id) {
