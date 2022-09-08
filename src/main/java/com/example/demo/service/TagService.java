@@ -20,13 +20,12 @@ public class TagService {
     }
 
     public ArrayList<Tag> createTags(String[] tags, User user) {
-        ArrayList<Tag> respondedTags = new ArrayList<>();
         ArrayList<Tag> created_tags = tagRepository.getTagsByName(tags);
-        respondedTags.addAll(created_tags);
-        ArrayList<String> nameOfTags = this.getNameOfTagsOf(created_tags);
-        for (int i = 0; i < tags.length; i++) {
-            if (!nameOfTags.contains(tags[i])) {
-                Tag newTag = new Tag(tags[i], user);
+        ArrayList<Tag> respondedTags = new ArrayList<>(created_tags);
+        ArrayList<String> nameOfTags = getNameOfTagsOf(created_tags);
+        for(String tagName: tags){
+            if(!nameOfTags.contains(tagName)){
+                Tag newTag = new Tag(tagName, user);
                 respondedTags.add(tagRepository.save(newTag));
             }
         }
@@ -43,8 +42,8 @@ public class TagService {
 
     private ArrayList<String> getNameOfTagsOf(ArrayList<Tag> created_tags) {
         ArrayList<String> s = new ArrayList<>();
-        for (int i = 0; i < created_tags.size(); i++) {
-            s.add(created_tags.get(i).getName());
+        for(Tag tag : created_tags) {
+            s.add(tag.getName());
         }
         return s;
     }
