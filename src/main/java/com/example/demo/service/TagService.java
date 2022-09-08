@@ -8,6 +8,7 @@ import com.example.demo.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Component
@@ -18,16 +19,14 @@ public class TagService {
         this.tagRepository = tagRepository;
     }
 
-    public Tag[] createTags(String[] tags, User user) {
-        Tag[] respondedTags = new Tag[tags.length];
-        for (int i = 0; i < tags.length; i++) {
-            Optional<Tag> tag = tagRepository.getTagByName(tags[i]);
-            if(tag.isEmpty()){
-                Tag newTag = new Tag(tags[i], user);
-                Tag createdTag = tagRepository.save(newTag);
-                respondedTags[i] = createdTag;
-            }else{
-                respondedTags[i] = tag.get();
+    public ArrayList<Tag> createTags(String[] tags, User user) {
+        ArrayList<Tag> created_tags = tagRepository.getTagsByName(tags);
+        ArrayList<Tag> respondedTags = new ArrayList<>(created_tags);
+        ArrayList<String> nameOfTags = getNameOfTagsOf(created_tags);
+        for(String tagName: tags){
+            if(!nameOfTags.contains(tagName)){
+                Tag newTag = new Tag(tagName, user);
+                respondedTags.add(tagRepository.save(newTag));
             }
         }
         return respondedTags;
@@ -35,10 +34,18 @@ public class TagService {
     public String[] getNameOfTags(){
         Optional<String[]> tags= tagRepository.getAllTagsNames();
         if(tags.isEmpty()){
-            String[] emptyTags= new String[0];
-            return emptyTags;
+            return new String[0];
         }else{
             return tags.get();
         }
     }
+
+    private ArrayList<String> getNameOfTagsOf(ArrayList<Tag> created_tags) {
+        ArrayList<String> s = new ArrayList<>();
+        for(Tag tag : created_tags) {
+            s.add(tag.getName());
+        }
+        return s;
+    }
+
 }
