@@ -8,9 +8,6 @@ import com.example.demo.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-
 @Component
 public class PostService {
     private final PostRepository postRepository;
@@ -19,9 +16,11 @@ public class PostService {
     public PostService(PostRepository postRepository) {
         this.postRepository = postRepository;
     }
-    public Post create(PostDTO postWithTags, User user, ArrayList<Tag> tags) {
+    public Post create(PostDTO postWithTags, User user, Tag[] tags) {
         Post post = new Post(postWithTags.getTitle(), postWithTags.getText(), user);
-        post.getTags().addAll(tags);
+        for (int i = 0; i < tags.length; i++) {
+            post.getTags().add(tags[i]);
+        }
         return postRepository.save(post);
     }
 

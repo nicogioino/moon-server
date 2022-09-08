@@ -32,9 +32,6 @@ public class Tag {
         this.name = name;
         this.user = user;
     }
-    public Tag(String name){
-        this.name = name;
-    }
 
     public Tag() {
     }

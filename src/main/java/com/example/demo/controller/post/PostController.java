@@ -13,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-
 @RestController
 @CrossOrigin(origins= "*")
 @RequestMapping(path= "/post")
@@ -36,7 +34,7 @@ public class PostController {
         try{
             User user = userService.findUserByUsername(Authorization);
             postInputValidator.checkCreatePost(possiblePost);
-            ArrayList<Tag> tags = tagService.createTags(possiblePost.getTags(), user);
+            Tag[] tags = tagService.createTags(possiblePost.getTags(), user);
             Post post = postService.create(possiblePost, user, tags);
             return new ResponseEntity<>(post, HttpStatus.CREATED);
         } catch (Exception e) {
