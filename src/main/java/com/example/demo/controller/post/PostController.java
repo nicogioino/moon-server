@@ -51,8 +51,19 @@ public class PostController {
             postInputValidator.checkCreatePost(possiblePost);
             Tag[] tags = tagService.createTags(possiblePost.getTags(), user).toArray(new Tag[0]);
             Post post = postService.editPost(postId, possiblePost, user, tags);
-            return new ResponseEntity<>(post, HttpStatus.CREATED);
+            return new ResponseEntity<>(post, HttpStatus.OK);
         } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(path = "/{postId}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deletePost(@PathVariable("postId") Long postId, @RequestHeader String Authorization){
+        try{
+            User user = userService.findUserByUsername(Authorization);
+            postService.deletePost(postId, user);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
