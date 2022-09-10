@@ -25,6 +25,13 @@ public class PostService {
         return postRepository.save(post);
     }
 
+    public Post deletePost(Long postId, User user) {
+        Post post = getPost(postId);
+        if (!belongsToUser(user, post)) throw new RuntimeException("You can't delete this post");
+        postRepository.delete(post);
+        return post;
+    }
+
     public Post editPost(Long postId, PostDTO possiblePost, User user, Tag[] tags) {
         return edit(postId, possiblePost, tags, user);
     }
