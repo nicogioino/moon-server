@@ -68,14 +68,6 @@ public class UserService{
         return userRepository.existsByEmail(user.getEmail());
     }
 
-    public User getUserById(Long id) {
-        Optional<User> user = userRepository.findById(id);
-        if(user.isEmpty()){
-            throw new IllegalStateException("User does not exists");
-        }else{
-            return user.get();
-        }
-    }
     public User findUserByUsername(String header) {
         String token = header.substring(7);
         String username = jwtUtil.extractUsername(token);
