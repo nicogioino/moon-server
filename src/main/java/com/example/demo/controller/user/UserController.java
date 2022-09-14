@@ -45,6 +45,15 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<?> getUserProfile(@RequestHeader String Authorization) {
+        try {
+            User user = userService.findUserByUsername(Authorization);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
 
 }
