@@ -12,7 +12,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 
 @Service
@@ -68,11 +67,12 @@ public class UserService{
         return userRepository.existsByEmail(user.getEmail());
     }
 
-    public User findUserByUsername(String header) {
+    public User findUserByEmail(String header) {
         String token = header.substring(7);
-        String username = jwtUtil.extractUsername(token);
-        return userRepository.getUserByUsername(username).orElseThrow(() -> new IllegalStateException(
-                "user with username " + username + " does not exists"
+        String email = jwtUtil.extractUsername(token);
+
+        return userRepository.getUserByEmail(email).orElseThrow(() -> new IllegalStateException(
+                "user with email " + email + " does not exists"
         ));
     }
 

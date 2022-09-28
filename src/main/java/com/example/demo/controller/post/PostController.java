@@ -34,7 +34,7 @@ public class PostController {
     @PostMapping
     public ResponseEntity<?> createPost(@RequestBody PostDTO possiblePost, @RequestHeader String Authorization ){
         try{
-            User user = userService.findUserByUsername(Authorization);
+            User user = userService.findUserByEmail(Authorization);
             postInputValidator.checkCreatePost(possiblePost);
             ArrayList<Tag> tags = tagService.createTags(possiblePost.getTags(), user);
             Post post = postService.create(possiblePost, user, tags);
@@ -47,7 +47,7 @@ public class PostController {
     @RequestMapping(path = "/edit/{postId}", method = RequestMethod.PATCH)
     public ResponseEntity<?> editPost(@PathVariable("postId") Long postId, @RequestBody PostDTO possiblePost, @RequestHeader String Authorization){
         try{
-            User user = userService.findUserByUsername(Authorization);
+            User user = userService.findUserByEmail(Authorization);
             postInputValidator.checkCreatePost(possiblePost);
             Tag[] tags = tagService.createTags(possiblePost.getTags(), user).toArray(new Tag[0]);
             Post post = postService.editPost(postId, possiblePost, user, tags);
@@ -60,7 +60,7 @@ public class PostController {
     @RequestMapping(path = "/{postId}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deletePost(@PathVariable("postId") Long postId, @RequestHeader String Authorization){
         try{
-            User user = userService.findUserByUsername(Authorization);
+            User user = userService.findUserByEmail(Authorization);
             postService.deletePost(postId, user);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }catch (Exception e){

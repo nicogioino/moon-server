@@ -37,7 +37,7 @@ public class UserController {
     @RequestMapping(method = RequestMethod.PUT)
     public ResponseEntity<?> updateUser(@RequestBody(required = false) UserUpdateDTO userUpdateDTO, @RequestHeader String Authorization) {
         try {
-            User user = userService.findUserByUsername(Authorization);
+            User user = userService.findUserByEmail(Authorization);
             userInputValidator.checkUpdateInput(userUpdateDTO);
             User response = userService.updateUser(user, userUpdateDTO);
             return new ResponseEntity<>(UserListingDTO.fromUser(response), HttpStatus.OK);
@@ -48,7 +48,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<?> getUserProfile(@RequestHeader String Authorization) {
         try {
-            User user = userService.findUserByUsername(Authorization);
+            User user = userService.findUserByEmail(Authorization);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
