@@ -4,7 +4,6 @@ import com.example.demo.model.auth.AuthenticationRequest;
 import com.example.demo.model.auth.AuthenticationResponse;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.util.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,12 +16,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AuthController {
-
+    private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final JwtUtil jwtTokenUtil;
 
-    public AuthController(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JwtUtil jwtTokenUtil) {
+    public AuthController(UserRepository userRepository, AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JwtUtil jwtTokenUtil) {
+        this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtTokenUtil = jwtTokenUtil;
@@ -41,8 +41,8 @@ public class AuthController {
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         
-
-        return ResponseEntity.ok(new AuthenticationResponse(jwtTokenUtil.generateToken(userDetails)));
+        String email = userRepository.getEmailByUsername(userDetails.getUsername());
+        return ResponseEntity.ok(new AuthenticationResponse(jwtTokenUtil.generateToken(email)));
 
     }
 
