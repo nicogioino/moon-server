@@ -5,7 +5,6 @@ import com.example.demo.dto.user.UserUpdateDTO;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 
-import com.example.demo.security.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 
@@ -34,7 +33,7 @@ public class UserService{
             user.setBio(userUpdateDTO.getBiography());
         }
         if(userUpdateDTO.getPassword() != null){
-            user.setPassword(userUpdateDTO.getPassword());
+            user.setPassword(passwordEncoder.encode(userUpdateDTO.getPassword()));
         }
         userRepository.save(user);
         return user;
