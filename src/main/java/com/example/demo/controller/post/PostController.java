@@ -1,9 +1,11 @@
 package com.example.demo.controller.post;
 
 import com.example.demo.dto.post.PostDTO;
+import com.example.demo.dto.post.PostListingDTO;
 import com.example.demo.model.Post;
 import com.example.demo.model.Tag;
 import com.example.demo.model.User;
+import com.example.demo.security.util.JwtUtil;
 import com.example.demo.service.PostService;
 import com.example.demo.service.TagService;
 import com.example.demo.service.UserService;
@@ -25,6 +27,9 @@ public class PostController {
     private  final TagService tagService;
 
     @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
     public PostController(PostService postService, UserService userService, TagService tagService) {
         this.postService = postService;
         this.userService = userService;
@@ -34,33 +39,36 @@ public class PostController {
     @PostMapping
     public ResponseEntity<?> createPost(@RequestBody PostDTO possiblePost, @RequestHeader String Authorization ){
         try{
-            User user = userService.findUserByEmail(Authorization);
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
             postInputValidator.checkCreatePost(possiblePost);
             ArrayList<Tag> tags = tagService.createTags(possiblePost.getTags(), user);
             Post post = postService.create(possiblePost, user, tags);
-            return new ResponseEntity<>(post, HttpStatus.CREATED);
+            return new ResponseEntity<>(PostListingDTO.fromPost(post), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @RequestMapping(path = "/edit/{postId}", method = RequestMethod.PATCH)
+    @PutMapping("/{postId}")
     public ResponseEntity<?> editPost(@PathVariable("postId") Long postId, @RequestBody PostDTO possiblePost, @RequestHeader String Authorization){
         try{
-            User user = userService.findUserByEmail(Authorization);
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
             postInputValidator.checkCreatePost(possiblePost);
             Tag[] tags = tagService.createTags(possiblePost.getTags(), user).toArray(new Tag[0]);
             Post post = postService.editPost(postId, possiblePost, user, tags);
-            return new ResponseEntity<>(post, HttpStatus.OK);
+            return new ResponseEntity<>(PostListingDTO.fromPost(post), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @RequestMapping(path = "/{postId}", method = RequestMethod.DELETE)
+    @DeleteMapping("/post/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable("postId") Long postId, @RequestHeader String Authorization){
         try{
-            User user = userService.findUserByEmail(Authorization);
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
             postService.deletePost(postId, user);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }catch (Exception e){

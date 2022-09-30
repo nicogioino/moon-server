@@ -19,9 +19,6 @@ public class UserService{
     private final UserRepository userRepository;
 
     @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository) {
@@ -67,10 +64,7 @@ public class UserService{
         return userRepository.existsByEmail(user.getEmail());
     }
 
-    public User findUserByEmail(String header) {
-        String token = header.substring(7);
-        String email = jwtUtil.extractUsername(token);
-
+    public User findUserByEmail(String email) {
         return userRepository.getUserByEmail(email).orElseThrow(() -> new IllegalStateException(
                 "user with email " + email + " does not exists"
         ));

@@ -7,11 +7,12 @@ import com.example.demo.model.User;
 import com.example.demo.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-@Component
+@Service
 public class PostService {
     private final PostRepository postRepository;
 

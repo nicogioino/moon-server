@@ -1,7 +1,8 @@
-package com.example.demo.utils;
+package com.example.demo.validators;
 
 import com.example.demo.dto.user.UserCreationDTO;
 import com.example.demo.dto.user.UserUpdateDTO;
+import com.example.demo.utils.Utils;
 
 public class UserInputValidator {
     public boolean checkUpdateInput(UserUpdateDTO userUpdateDTO) throws Exception {

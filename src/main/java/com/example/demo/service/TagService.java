@@ -7,11 +7,12 @@ import com.example.demo.model.User;
 import com.example.demo.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
-@Component
+@Service
 public class TagService {
     private final TagRepository tagRepository;
     @Autowired
