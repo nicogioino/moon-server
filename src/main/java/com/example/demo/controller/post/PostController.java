@@ -6,6 +6,7 @@ import com.example.demo.model.Post;
 import com.example.demo.model.Tag;
 import com.example.demo.model.User;
 import com.example.demo.security.util.JwtUtil;
+import com.example.demo.service.FollowService;
 import com.example.demo.service.PostService;
 import com.example.demo.service.TagService;
 import com.example.demo.service.UserService;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 public class PostController {
     private final PostInputValidator postInputValidator = new PostInputValidator();
     private final PostService postService;
+    private final FollowService followService;
     private final UserService userService;
     private  final TagService tagService;
 
@@ -30,10 +32,11 @@ public class PostController {
     private JwtUtil jwtUtil;
 
     @Autowired
-    public PostController(PostService postService, UserService userService, TagService tagService) {
+    public PostController(PostService postService, UserService userService, TagService tagService, FollowService followService) {
         this.postService = postService;
         this.userService = userService;
         this.tagService = tagService;
+        this.followService = followService;
     }
 
     @PostMapping
@@ -45,6 +48,19 @@ public class PostController {
             ArrayList<Tag> tags = tagService.createTags(possiblePost.getTags(), user);
             Post post = postService.create(possiblePost, user, tags);
             return new ResponseEntity<>(PostListingDTO.fromPost(post), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllPosts(@RequestHeader String Authorization ){
+        try{
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            Long[] usersId = followService.findUsersId(user);
+            Post[] posts = postService.getAllPosts(usersId, user.getId());
+            return new ResponseEntity<>(PostListingDTO.fromPosts(posts), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

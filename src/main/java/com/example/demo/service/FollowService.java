@@ -6,6 +6,10 @@ import com.example.demo.repository.FollowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,12 +36,17 @@ public class FollowService {
 
     public Follow unfollow(User follower, User possibleFollowed) {
         Optional<Follow> follow = checkIfFollowExists(follower, possibleFollowed) ;
-        if( follow.isPresent()){
+        if(follow.isPresent()){
            Follow realFollowed = follow.get();
            realFollowed.deleteRelation();
            return followRepository.save(realFollowed);
         }else{
             throw new Error("You can't unfollow a user that you don't follow");
         }
+    }
+
+    public Long[] findUsersId(User user) {
+        Long[] ids = followRepository.findFollows(user.getId());
+        return ids;
     }
 }
