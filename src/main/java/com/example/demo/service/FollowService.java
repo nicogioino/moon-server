@@ -5,10 +5,7 @@ import com.example.demo.model.User;
 import com.example.demo.repository.FollowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +43,13 @@ public class FollowService {
     }
 
     public Long[] findUsersId(User user) {
-        Long[] ids = followRepository.findFollows(user.getId());
-        return ids;
+        return followRepository.findFollows(user.getId());
     }
+
+    public List<User> getFollowedUsers(User user) {
+        Optional<List<User>> users = followRepository.findFollowedUsersByFollowerId(user.getId());
+        return users.orElseGet(ArrayList::new);
+    }
+
+
 }

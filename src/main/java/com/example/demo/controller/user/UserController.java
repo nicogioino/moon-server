@@ -9,6 +9,7 @@ import com.example.demo.model.Follow;
 import com.example.demo.model.User;
 import com.example.demo.security.util.JwtUtil;
 import com.example.demo.service.FollowService;
+import com.example.demo.service.TagService;
 import com.example.demo.service.UserService;
 import com.example.demo.validators.UserInputValidator;
 import com.example.demo.validators.FollowInputValidator;
@@ -29,10 +30,13 @@ public class UserController {
     private final FollowInputValidator followInputValidator = new FollowInputValidator();
     private final FollowService followService;
 
+    private final TagService tagService;
+
     @Autowired
-    public UserController(UserService userService, FollowService followService) {
+    public UserController(UserService userService, FollowService followService, TagService tagService) {
         this.userService = userService;
         this.followService = followService;
+        this.tagService = tagService;
     }
 
     @PostMapping
@@ -89,6 +93,26 @@ public class UserController {
             User follower = userService.findUserByEmail(email);
             Follow follow = followService.unfollow(follower, possibleFollowed);
             return new ResponseEntity<>(FollowListingDTO.fromFollow(follow), HttpStatus.OK);
+        } catch (Error e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping
+    public ResponseEntity<?> getFollowedUsers(@RequestHeader String Authorization) {
+        try {
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            return new ResponseEntity<>(followService.getFollowedUsers(user), HttpStatus.OK);
+        } catch (Error e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping
+    public ResponseEntity<?> getFollowedTags(@RequestHeader String Authorization) {
+        try {
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            return new ResponseEntity<>(tagService.getUserTags(user), HttpStatus.OK);
         } catch (Error e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

@@ -6,10 +6,10 @@ import com.example.demo.model.Tag;
 import com.example.demo.model.User;
 import com.example.demo.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -47,6 +47,9 @@ public class TagService {
             s.add(tag.getName());
         }
         return s;
+    }
+    public List<Tag> getUserTags(User user) {
+        return tagRepository.findByUser(user.getId());
     }
 
 }
