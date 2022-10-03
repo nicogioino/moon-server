@@ -17,6 +17,11 @@ public class JwtUtil {
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+    public String extractEmail(String token) {
+       String jwt = token.substring(7);
+        return extractUsername(jwt);
+    }
+
 
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);

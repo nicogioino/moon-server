@@ -5,7 +5,6 @@ import com.example.demo.dto.user.UserUpdateDTO;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 
-import com.example.demo.security.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 
@@ -17,9 +16,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService{
     private final UserRepository userRepository;
-
-    @Autowired
-    private JwtUtil jwtUtil;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -37,7 +33,7 @@ public class UserService{
             user.setBio(userUpdateDTO.getBiography());
         }
         if(userUpdateDTO.getPassword() != null){
-            user.setPassword(userUpdateDTO.getPassword());
+            user.setPassword(passwordEncoder.encode(userUpdateDTO.getPassword()));
         }
         userRepository.save(user);
         return user;
@@ -67,10 +63,7 @@ public class UserService{
         return userRepository.existsByEmail(user.getEmail());
     }
 
-    public User findUserByEmail(String header) {
-        String token = header.substring(7);
-        String email = jwtUtil.extractUsername(token);
-
+    public User findUserByEmail(String email) {
         return userRepository.getUserByEmail(email).orElseThrow(() -> new IllegalStateException(
                 "user with email " + email + " does not exists"
         ));

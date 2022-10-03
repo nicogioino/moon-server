@@ -6,12 +6,12 @@ import com.example.demo.model.Tag;
 import com.example.demo.model.User;
 import com.example.demo.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-@Component
+@Service
 public class PostService {
     private final PostRepository postRepository;
 
@@ -38,7 +38,6 @@ public class PostService {
 
     private Post edit(Long postId, PostDTO possiblePost, Tag[] tags, User user) {
         Post post = getPost(postId);
-
         if (belongsToUser(user, post)) {
             if(possiblePost.getTitle() != null){
                 post.setTitle(possiblePost.getTitle());
@@ -58,6 +57,9 @@ public class PostService {
         }
     }
 
+    public Post[] getAllPosts(Long[] usersId, Long userId){
+        return postRepository.allPostsFrom(usersId, userId, Sort.by(Sort.Direction.DESC, "createdAt") );
+    }
     private boolean belongsToUser(User user, Post post) {return user.getId().equals(post.getUser().getId());}
 
     private Post getPost(Long postId) {

@@ -1,16 +1,19 @@
 package com.example.demo.model;
 
+import org.springframework.data.annotation.CreatedDate;
+
 import javax.persistence.*;
 
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "posts")
-public class Post {
+public class Post extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -49,10 +52,6 @@ public class Post {
     public Post() {
     }
 
-    public User getUser() {
-        return user;
-    }
-
     public Post(Long id, String title, String text, User user) {
         this.id = id;
         this.title = title;
@@ -75,6 +74,9 @@ public class Post {
         return id;
     }
 
+    public User getUser() {
+        return user;
+    }
     public String getTitle() {
         return title;
     }
