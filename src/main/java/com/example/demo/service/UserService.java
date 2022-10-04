@@ -28,7 +28,7 @@ public class UserService{
     public User updateUser(User user, UserUpdateDTO userUpdateDTO) {
         if(userUpdateDTO.getUsername() != null){
             if (usernameAlreadyExists(userUpdateDTO.getUsername())) {
-                throw new IllegalStateException("El username ya esta en uso");
+                throw new IllegalStateException("El nombre de usuario ya esta en uso");
             }
             user.setUsername(userUpdateDTO.getUsername());
         }
@@ -45,7 +45,7 @@ public class UserService{
 
     public User create(UserCreationDTO userDto) {
         if (usernameAlreadyExists(userDto.getUsername())) {
-            throw new IllegalStateException("El username ya esta en uso");
+            throw new IllegalStateException("El nombre de usuario ya esta en uso");
         }
         if (emailAlreadyExists(userDto.getEmail())) {
             throw new IllegalStateException("El email ya esta en uso");
