@@ -27,6 +27,9 @@ public class UserService{
     @Modifying
     public User updateUser(User user, UserUpdateDTO userUpdateDTO) {
         if(userUpdateDTO.getUsername() != null){
+            if (usernameAlreadyExists(userUpdateDTO.getUsername())) {
+                throw new IllegalStateException("Username not available");
+            }
             user.setUsername(userUpdateDTO.getUsername());
         }
         if(userUpdateDTO.getBiography() != null){
@@ -41,11 +44,11 @@ public class UserService{
 
 
     public User create(UserCreationDTO userDto) {
-        if (usernameAlreadyExists(userDto)) {
-            throw new IllegalStateException("Nombre de usuario no disponible");
+        if (usernameAlreadyExists(userDto.getUsername())) {
+            throw new IllegalStateException("Username not available");
         }
-        if (emailAlreadyExists(userDto)) {
-            throw new IllegalStateException("Email no disponible");
+        if (emailAlreadyExists(userDto.getEmail())) {
+            throw new IllegalStateException("Email not available");
         }
         User user = new User();
         user.setUsername(userDto.getUsername());
@@ -55,12 +58,12 @@ public class UserService{
         return userRepository.save(user);
     }
 
-    private boolean usernameAlreadyExists(UserCreationDTO user) {
-        return userRepository.existsByUsername(user.getUsername());
+    private boolean usernameAlreadyExists(String username) {
+        return userRepository.existsByUsername(username);
     }
 
-    private boolean emailAlreadyExists(UserCreationDTO user) {
-        return userRepository.existsByEmail(user.getEmail());
+    private boolean emailAlreadyExists(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     public User findUserByEmail(String email) {
