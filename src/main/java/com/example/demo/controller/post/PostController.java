@@ -72,7 +72,7 @@ public class PostController {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
             postInputValidator.checkCreatePost(possiblePost);
-            Tag[] tags = tagService.createTags(possiblePost.getTags(), user).toArray(new Tag[0]);
+            ArrayList<Tag> tags = tagService.createTags(possiblePost.getTags(), user);
             Post post = postService.editPost(postId, possiblePost, user, tags);
             return new ResponseEntity<>(PostListingDTO.fromPost(post), HttpStatus.OK);
         } catch (Exception e) {
@@ -80,7 +80,7 @@ public class PostController {
         }
     }
 
-    @DeleteMapping("/post/{postId}")
+    @DeleteMapping("/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable("postId") Long postId, @RequestHeader String Authorization){
         try{
             String email = jwtUtil.extractEmail(Authorization);

@@ -32,11 +32,11 @@ public class PostService {
         return post;
     }
 
-    public Post editPost(Long postId, PostDTO possiblePost, User user, Tag[] tags) {
+    public Post editPost(Long postId, PostDTO possiblePost, User user, ArrayList<Tag> tags) {
         return edit(postId, possiblePost, tags, user);
     }
 
-    private Post edit(Long postId, PostDTO possiblePost, Tag[] tags, User user) {
+    private Post edit(Long postId, PostDTO possiblePost, ArrayList<Tag> tags, User user) {
         Post post = getPost(postId);
         if (belongsToUser(user, post)) {
             if(possiblePost.getTitle() != null){
@@ -47,9 +47,8 @@ public class PostService {
             }
             if(tags != null){
                 post.getTags().clear();
-                for (Tag tag : tags) {
-                    post.getTags().add(tag);
-                }
+                post.getTags().addAll(tags);
+
             }
             return postRepository.save(post);
         } else {
