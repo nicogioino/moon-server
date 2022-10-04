@@ -28,7 +28,7 @@ public class UserService{
     public User updateUser(User user, UserUpdateDTO userUpdateDTO) {
         if(userUpdateDTO.getUsername() != null){
             if (usernameAlreadyExists(userUpdateDTO.getUsername())) {
-                throw new IllegalStateException("Username not available");
+                throw new IllegalStateException("El username ya esta en uso");
             }
             user.setUsername(userUpdateDTO.getUsername());
         }
