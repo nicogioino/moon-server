@@ -45,10 +45,10 @@ public class UserService{
 
     public User create(UserCreationDTO userDto) {
         if (usernameAlreadyExists(userDto.getUsername())) {
-            throw new IllegalStateException("Username not available");
+            throw new IllegalStateException("El username ya esta en uso");
         }
         if (emailAlreadyExists(userDto.getEmail())) {
-            throw new IllegalStateException("Email not available");
+            throw new IllegalStateException("El email ya esta en uso");
         }
         User user = new User();
         user.setUsername(userDto.getUsername());
