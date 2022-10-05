@@ -53,13 +53,35 @@ public class PostController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/feed")
     public ResponseEntity<?> getAllPosts(@RequestHeader String Authorization ){
         try{
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
             Long[] usersId = followService.findUsersId(user);
             Post[] posts = postService.getAllPosts(usersId, user.getId());
+            return new ResponseEntity<>(PostListingDTO.fromPosts(posts), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping()
+    public ResponseEntity<?> getPosts(@RequestHeader String Authorization ){
+        try{
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            Post[] posts = postService.getPostsFrom(user.getId());
+            return new ResponseEntity<>(PostListingDTO.fromPosts(posts), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> getPostsFrom(@PathVariable("userId") Long userId, @RequestHeader String Authorization ){
+        try{
+            Post[] posts = postService.getPostsFrom(userId);
             return new ResponseEntity<>(PostListingDTO.fromPosts(posts), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

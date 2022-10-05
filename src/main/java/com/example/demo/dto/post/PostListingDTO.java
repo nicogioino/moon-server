@@ -9,9 +9,9 @@ import java.util.Set;
 
 public class PostListingDTO {
 
-
     String title;
     String text;
+    Long id;
     TagListingDTO[] tags;
     UserListingDTO user;
 
@@ -24,11 +24,13 @@ public class PostListingDTO {
         return postListingDTO;
     }
 
+
     public static PostListingDTO[] fromPosts(Post[] posts) {
         ArrayList<PostListingDTO> arrayedPosts = new ArrayList<>();
         for(Post post: posts){
             PostListingDTO postListingDTO = new PostListingDTO();
             postListingDTO.setText(post.getText());
+            postListingDTO.setId(post.getId());
             postListingDTO.setTitle(post.getTitle());
             postListingDTO.setTags(generateTags(post.getTags()));
             postListingDTO.setUser(UserListingDTO.fromUser(post.getUser()));
@@ -64,6 +66,13 @@ public class PostListingDTO {
     }
     public String getTitle() {
         return title;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getText() {

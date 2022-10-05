@@ -60,6 +60,10 @@ public class PostService {
     public Post[] getAllPosts(Long[] usersId, Long userId){
         return postRepository.allPostsFrom(usersId, userId, Sort.by(Sort.Direction.DESC, "createdAt") );
     }
+
+    public Post[] getPostsFrom(Long userId){
+        return postRepository.postsFrom(userId, Sort.by(Sort.Direction.DESC, "createdAt") );
+    }
     private boolean belongsToUser(User user, Post post) {return user.getId().equals(post.getUser().getId());}
 
     private Post getPost(Long postId) {
