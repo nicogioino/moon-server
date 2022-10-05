@@ -59,7 +59,7 @@ public class UserController {
         }
     }
     @GetMapping
-    public ResponseEntity<?> getUserProfile(@RequestBody String Authorization) {
+    public ResponseEntity<?> getUserProfile(@RequestHeader String Authorization) {
         try {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
