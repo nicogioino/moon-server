@@ -1,5 +1,6 @@
 package com.example.demo.controller.post;
 
+import com.example.demo.dto.error.ErrorDTO;
 import com.example.demo.dto.post.PostDTO;
 import com.example.demo.dto.post.PostListingDTO;
 import com.example.demo.model.Post;
@@ -49,11 +50,11 @@ public class PostController {
             Post post = postService.create(possiblePost, user, tags);
             return new ResponseEntity<>(PostListingDTO.fromPost(post), HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping
+    @GetMapping("/feed")
     public ResponseEntity<?> getAllPosts(@RequestHeader String Authorization ){
         try{
             String email = jwtUtil.extractEmail(Authorization);
@@ -62,25 +63,47 @@ public class PostController {
             Post[] posts = postService.getAllPosts(usersId, user.getId());
             return new ResponseEntity<>(PostListingDTO.fromPosts(posts), HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PutMapping("/{postId}")
+    @GetMapping()
+    public ResponseEntity<?> getPosts(@RequestHeader String Authorization ){
+        try{
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            Post[] posts = postService.getPostsFrom(user.getId());
+            return new ResponseEntity<>(PostListingDTO.fromPosts(posts), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> getPostsFrom(@PathVariable("userId") Long userId, @RequestHeader String Authorization ){
+        try{
+            Post[] posts = postService.getPostsFrom(userId);
+            return new ResponseEntity<>(PostListingDTO.fromPosts(posts), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PatchMapping("/{postId}")
     public ResponseEntity<?> editPost(@PathVariable("postId") Long postId, @RequestBody PostDTO possiblePost, @RequestHeader String Authorization){
         try{
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
             postInputValidator.checkCreatePost(possiblePost);
-            Tag[] tags = tagService.createTags(possiblePost.getTags(), user).toArray(new Tag[0]);
+            ArrayList<Tag> tags = tagService.createTags(possiblePost.getTags(), user);
             Post post = postService.editPost(postId, possiblePost, user, tags);
             return new ResponseEntity<>(PostListingDTO.fromPost(post), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @DeleteMapping("/post/{postId}")
+    @DeleteMapping("/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable("postId") Long postId, @RequestHeader String Authorization){
         try{
             String email = jwtUtil.extractEmail(Authorization);
@@ -88,7 +111,7 @@ public class PostController {
             postService.deletePost(postId, user);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }catch (Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 }
