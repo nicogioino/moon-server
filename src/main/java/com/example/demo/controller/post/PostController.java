@@ -88,7 +88,7 @@ public class PostController {
         }
     }
 
-    @PutMapping("/{postId}")
+    @PatchMapping("/{postId}")
     public ResponseEntity<?> editPost(@PathVariable("postId") Long postId, @RequestBody PostDTO possiblePost, @RequestHeader String Authorization){
         try{
             String email = jwtUtil.extractEmail(Authorization);
