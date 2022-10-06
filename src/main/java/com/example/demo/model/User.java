@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -31,6 +32,15 @@ public class User extends BaseEntity{
     @Column(name = "password", nullable = false)
     @Size(min=8, max =255)
     private String password;
+
+    @ManyToMany
+    @JoinTable(
+            name = "bookmarks",
+            joinColumns = @JoinColumn(name = "user_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "post_id", nullable = false)
+
+    )
+    Set<Post> bookmarkedPosts;
 
     public User(String username, String mail, String password) {
         this.username = username;
@@ -68,4 +78,8 @@ public class User extends BaseEntity{
     public String getBio() {return bio;}
 
     public void setBio(String bio) {this.bio = bio;}
+
+    public Set<Post> getBookmarkedPosts() {
+        return bookmarkedPosts;
+    }
 }

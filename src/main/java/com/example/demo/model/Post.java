@@ -31,6 +31,9 @@ public class Post extends BaseEntity{
     @Size(min=1, max =500)
     private String text;
 
+    @ManyToMany(mappedBy = "bookmarkedPosts")
+    Set<User> bookmarkedByUsers;
+
     @ManyToMany(cascade = {
             CascadeType.ALL
     })

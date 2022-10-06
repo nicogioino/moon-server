@@ -1,5 +1,6 @@
 package com.example.demo.controller.post;
 
+import com.example.demo.dto.post.BookmarksDTO;
 import com.example.demo.dto.post.PostDTO;
 import com.example.demo.dto.post.PostListingDTO;
 import com.example.demo.model.Post;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 @RestController
 @CrossOrigin(origins= "*")
@@ -91,4 +93,17 @@ public class PostController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/bookmarks")
+    public ResponseEntity<?> getAllBookmarks(@RequestHeader String Authorization) {
+        try {
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            Set<Post> bookmarks = user.getBookmarkedPosts();
+            return new ResponseEntity<>(BookmarksDTO.fromPosts(bookmarks), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
