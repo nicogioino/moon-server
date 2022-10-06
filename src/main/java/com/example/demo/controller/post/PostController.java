@@ -1,5 +1,6 @@
 package com.example.demo.controller.post;
 
+import com.example.demo.dto.error.ErrorDTO;
 import com.example.demo.dto.post.PostDTO;
 import com.example.demo.dto.post.PostListingDTO;
 import com.example.demo.model.Post;
@@ -49,7 +50,7 @@ public class PostController {
             Post post = postService.create(possiblePost, user, tags);
             return new ResponseEntity<>(PostListingDTO.fromPost(post), HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -62,7 +63,7 @@ public class PostController {
             Post[] posts = postService.getAllPosts(usersId, user.getId());
             return new ResponseEntity<>(PostListingDTO.fromPosts(posts), HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -74,7 +75,7 @@ public class PostController {
             Post[] posts = postService.getPostsFrom(user.getId());
             return new ResponseEntity<>(PostListingDTO.fromPosts(posts), HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -84,7 +85,7 @@ public class PostController {
             Post[] posts = postService.getPostsFrom(userId);
             return new ResponseEntity<>(PostListingDTO.fromPosts(posts), HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -98,7 +99,7 @@ public class PostController {
             Post post = postService.editPost(postId, possiblePost, user, tags);
             return new ResponseEntity<>(PostListingDTO.fromPost(post), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -110,7 +111,7 @@ public class PostController {
             postService.deletePost(postId, user);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }catch (Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 }

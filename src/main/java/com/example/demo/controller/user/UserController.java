@@ -1,5 +1,6 @@
 package com.example.demo.controller.user;
 
+import com.example.demo.dto.error.ErrorDTO;
 import com.example.demo.dto.follow.FollowDTO;
 import com.example.demo.dto.follow.FollowListingDTO;
 import com.example.demo.dto.user.UserCreationDTO;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -42,7 +44,7 @@ public class UserController {
             User user = userService.create(possibleBody);
             return new ResponseEntity<>(UserListingDTO.fromUser(user), HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -55,7 +57,7 @@ public class UserController {
             User response = userService.updateUser(user, userUpdateDTO);
             return new ResponseEntity<>(UserListingDTO.fromUser(response), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
     @GetMapping
@@ -65,7 +67,7 @@ public class UserController {
             User user = userService.findUserByEmail(email);
             return new ResponseEntity<>(UserListingDTO.fromUser(user), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -78,7 +80,7 @@ public class UserController {
             Follow follow = followService.follow(follower, possibleFollowed);
             return new ResponseEntity<>(FollowListingDTO.fromFollow(follow), HttpStatus.OK);
         } catch (Error e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
     @RequestMapping(path = "/unfollow", method = RequestMethod.POST)
@@ -90,7 +92,7 @@ public class UserController {
             Follow follow = followService.unfollow(follower, possibleFollowed);
             return new ResponseEntity<>(FollowListingDTO.fromFollow(follow), HttpStatus.OK);
         } catch (Error e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 }
