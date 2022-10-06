@@ -29,15 +29,16 @@ public class PostService {
     public Post deletePost(Long postId, User user) {
         Post post = getPost(postId);
         if (!belongsToUser(user, post)) throw new RuntimeException("You can't delete this post");
-        postRepository.delete(post);
+        post.deletePost();
+        postRepository.save(post);
         return post;
     }
 
-    public Post editPost(Long postId, PostDTO possiblePost, User user, Tag[] tags) {
+    public Post editPost(Long postId, PostDTO possiblePost, User user, ArrayList<Tag> tags) {
         return edit(postId, possiblePost, tags, user);
     }
 
-    private Post edit(Long postId, PostDTO possiblePost, Tag[] tags, User user) {
+    private Post edit(Long postId, PostDTO possiblePost, ArrayList<Tag> tags, User user) {
         Post post = getPost(postId);
         if (belongsToUser(user, post)) {
             if(possiblePost.getTitle() != null){
@@ -48,9 +49,8 @@ public class PostService {
             }
             if(tags != null){
                 post.getTags().clear();
-                for (Tag tag : tags) {
-                    post.getTags().add(tag);
-                }
+                post.getTags().addAll(tags);
+
             }
             return postRepository.save(post);
         } else {
@@ -60,6 +60,10 @@ public class PostService {
 
     public Post[] getAllPosts(Long[] usersId, Long userId){
         return postRepository.allPostsFrom(usersId, userId, Sort.by(Sort.Direction.DESC, "createdAt") );
+    }
+
+    public Post[] getPostsFrom(Long userId){
+        return postRepository.postsFrom(userId, Sort.by(Sort.Direction.DESC, "createdAt") );
     }
     private boolean belongsToUser(User user, Post post) {return user.getId().equals(post.getUser().getId());}
 

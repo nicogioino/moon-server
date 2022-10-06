@@ -1,13 +1,10 @@
 package com.example.demo.model;
 
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,6 +30,17 @@ public class Post extends BaseEntity{
 
     @ManyToMany(mappedBy = "bookmarkedPosts")
     Set<User> bookmarkedByUsers;
+
+    @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
+    private Boolean deleted = false;
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+    public void deletePost(){
+        this.getTags().clear();
+        this.deleted = true;
+    }
 
     @ManyToMany(cascade = {
             CascadeType.ALL
