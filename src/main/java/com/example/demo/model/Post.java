@@ -108,6 +108,9 @@ public class Post extends BaseEntity{
         this.tags = tags;
     }
 
+    public Set<User> getBookmarkedByUsers() {
+        return bookmarkedByUsers;
+    }
 
     @Override
     public String toString() {

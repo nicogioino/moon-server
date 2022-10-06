@@ -6,6 +6,7 @@ import com.example.demo.dto.user.UserCreationDTO;
 import com.example.demo.dto.user.UserListingDTO;
 import com.example.demo.dto.user.UserUpdateDTO;
 import com.example.demo.model.Follow;
+import com.example.demo.model.Post;
 import com.example.demo.model.User;
 import com.example.demo.security.util.JwtUtil;
 import com.example.demo.service.FollowService;
@@ -16,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -59,7 +62,7 @@ public class UserController {
         }
     }
     @GetMapping
-    public ResponseEntity<?> getUserProfile(@RequestBody String Authorization) {
+    public ResponseEntity<?> getUserProfile(@RequestHeader String Authorization) {
         try {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
@@ -68,6 +71,7 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
 
     @RequestMapping(path = "/follow", method = RequestMethod.POST)
     public ResponseEntity<?> follow(@RequestHeader String Authorization, @RequestBody FollowDTO followDTO) {
@@ -93,4 +97,6 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+
 }

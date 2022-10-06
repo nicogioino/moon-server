@@ -1,6 +1,6 @@
 package com.example.demo.controller.post;
 
-import com.example.demo.dto.post.BookmarksDTO;
+
 import com.example.demo.dto.post.PostDTO;
 import com.example.demo.dto.post.PostListingDTO;
 import com.example.demo.model.Post;
@@ -100,8 +100,21 @@ public class PostController {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
             Set<Post> bookmarks = user.getBookmarkedPosts();
-            return new ResponseEntity<>(BookmarksDTO.fromPosts(bookmarks), HttpStatus.OK);
+            Post[] posts = bookmarks.toArray(new Post[bookmarks.size()]);
+            return new ResponseEntity<>(PostListingDTO.fromPosts(posts), HttpStatus.OK);
         } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(method= RequestMethod.POST, path= "/bookmarks/{postId}")
+    public ResponseEntity<?> bookmarkPost(@PathVariable("postId") Long postId, @RequestHeader String Authorization){
+        try{
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            postService.bookmarkPost(postId, user, userService);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
