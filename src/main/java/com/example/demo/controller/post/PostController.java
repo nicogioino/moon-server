@@ -119,4 +119,16 @@ public class PostController {
         }
     }
 
+    @RequestMapping(method= RequestMethod.DELETE, path= "/bookmarks/{postId}")
+    public ResponseEntity<?> deleteBookmark(@PathVariable("postId") Long postId, @RequestHeader String Authorization){
+        try{
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            postService.deleteBookmark(postId, user, userService);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

@@ -83,4 +83,18 @@ public class PostService {
             postRepository.save(post);
         } else throw new IllegalArgumentException("Post already bookmarked");
     }
+
+    public void deleteBookmark(Long postId, User user, UserService userService) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Post with id " + postId + " does not exist"
+                ));
+        Set<Post> bookmarkedPosts = user.getBookmarkedPosts();
+        if(bookmarkedPosts.contains(post)) {
+            bookmarkedPosts.remove(post);
+            post.getBookmarkedByUsers().remove(user);
+            userService.save(user);
+            postRepository.save(post);
+        } else throw new IllegalArgumentException("Post not bookmarked");
+    }
 }
