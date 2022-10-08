@@ -5,8 +5,11 @@ import com.example.demo.dto.follow.FollowListingDTO;
 import com.example.demo.dto.user.UserCreationDTO;
 import com.example.demo.dto.user.UserListingDTO;
 import com.example.demo.dto.user.UserUpdateDTO;
+import com.example.demo.dto.user.UserUpdatePasswordDTO;
 import com.example.demo.model.Follow;
+import com.example.demo.model.PasswordResetToken;
 import com.example.demo.model.User;
+import com.example.demo.repository.PasswordTokenRepository;
 import com.example.demo.security.util.JwtUtil;
 import com.example.demo.service.FollowService;
 import com.example.demo.service.TagService;
@@ -16,7 +19,15 @@ import com.example.demo.validators.FollowInputValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -28,15 +39,18 @@ public class UserController {
     private final UserInputValidator userInputValidator = new UserInputValidator();
 
     private final FollowInputValidator followInputValidator = new FollowInputValidator();
+
+    private final PasswordTokenRepository passwordTokenRepository;
     private final FollowService followService;
 
     private final TagService tagService;
 
     @Autowired
-    public UserController(UserService userService, FollowService followService, TagService tagService) {
+    public UserController(UserService userService, FollowService followService, TagService tagService, PasswordTokenRepository passwordTokenRepository) {
         this.userService = userService;
         this.followService = followService;
         this.tagService = tagService;
+        this.passwordTokenRepository = passwordTokenRepository;
     }
 
     @PostMapping
@@ -97,6 +111,20 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+    @PostMapping("/user/resetPassword")
+    public ResponseEntity<?> resetPassword(HttpServletRequest request, @RequestParam("email") String userEmail) {
+        User user = userService.findUserByEmail(userEmail);
+        if (user == null) {
+            return new ResponseEntity<>("Email not found", HttpStatus.BAD_REQUEST);
+        }
+        String token = UUID.randomUUID().toString();
+        userService.createPasswordResetTokenForUser(user, token);
+        mailSender.send(constructResetTokenEmail(getAppUrl(request),
+                request.getLocale(), token, user));
+        return new GenericResponse(
+                messages.getMessage("message.resetPasswordEmail", null,
+                        request.getLocale()));
+    }
     @GetMapping
     public ResponseEntity<?> getFollowedUsers(@RequestHeader String Authorization) {
         try {
@@ -117,4 +145,54 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+    @GetMapping("/user/changePassword")
+    public String showChangePasswordPage(Locale locale, Model model, @RequestParam("token") String token) {
+        String result = securityService.validatePasswordResetToken(token);
+        if(result != null) {
+            String message = messages.getMessage("auth.message." + result, null, locale);
+            return "redirect:/login.html?lang="
+                    + locale.getLanguage() + "&message=" + message;
+        } else {
+            model.addAttribute("token", token);
+            return "redirect:/updatePassword.html?lang=" + locale.getLanguage();
+        }
+    }
+    public String validatePasswordResetToken(String token) {
+        final PasswordResetToken passToken = passwordTokenRepository.findByToken(token);
+
+        return !isTokenFound(passToken) ? "invalidToken"
+                : isTokenExpired(passToken) ? "expired"
+                : null;
+    }
+    @PostMapping("/user/savePassword")
+    public ResponseEntity<?> savePassword(final Locale locale, @Valid UserUpdatePasswordDTO passwordDto) {
+
+        String result = securityUserService.validatePasswordResetToken(passwordDto.getToken());
+
+        if(result != null) {
+            return new ResponseEntity<>(messages.getMessage(
+                    "auth.message." + result, null, locale));
+        }
+
+        Optional<User> user = Optional.ofNullable(userService.getUserByPasswordResetToken(passwordDto.getToken()));
+        if(user.isPresent()) {
+            userService.changeUserPassword(user.get(), passwordDto.getNewPassword());
+            return new ResponseEntity<>(messages.getMessage(
+                    "message.resetPasswordSuc", null, locale));
+        } else {
+            return new ResponseEntity<>(messages.getMessage(
+                    "auth.message.invalid", null, locale));
+        }
+    }
+
+    private boolean isTokenFound(PasswordResetToken passToken) {
+        return passToken != null;
+    }
+
+    private boolean isTokenExpired(PasswordResetToken passToken) {
+        final Calendar cal = Calendar.getInstance();
+        return passToken.getExpiryDate().before(cal.getTime());
+    }
+
+
 }

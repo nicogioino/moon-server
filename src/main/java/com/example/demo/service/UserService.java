@@ -2,15 +2,20 @@ package com.example.demo.service;
 
 import com.example.demo.dto.user.UserCreationDTO;
 import com.example.demo.dto.user.UserUpdateDTO;
+import com.example.demo.model.PasswordResetToken;
 import com.example.demo.model.User;
+import com.example.demo.repository.PasswordTokenRepository;
 import com.example.demo.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
+import java.util.Random;
 
 
 @Service
@@ -20,8 +25,11 @@ public class UserService{
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    private final PasswordTokenRepository passwordTokenRepository;
+
+    public UserService(UserRepository userRepository, PasswordTokenRepository passwordTokenRepository) {
         this.userRepository = userRepository;
+        this.passwordTokenRepository = passwordTokenRepository;
     }
 
     @Modifying
@@ -69,4 +77,37 @@ public class UserService{
         ));
     }
 
+    public void createPasswordResetTokenForUser(User user, String token) {
+        PasswordResetToken myToken = new PasswordResetToken(token, user);
+        passwordTokenRepository.save(myToken);
+    }
+
+    private SimpleMailMessage constructResetTokenEmail(String contextPath, Locale locale, String token, User user) {
+        String url = contextPath + "/user/changePassword?token=" + token;
+        String message = messages.getMessage("message.resetPassword",
+                null, locale);
+        return constructEmail("Reset Password", message + " \r\n" + url, user);
+    }
+
+    private SimpleMailMessage constructEmail(String subject, String body, User user) {
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setSubject(subject);
+        email.setText(body + " \r\n" + getRandomNumberString());
+        email.setTo(user.getEmail());
+        email.setFrom("support@moon.com"); //Get an actual email
+        return email;
+    }
+    public User getUserByPasswordResetToken(String token) {
+        return passwordTokenRepository.findByToken(token).getUser();
+    }
+    public void changeUserPassword(User user, String password) {
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+    }
+
+    private String getRandomNumberString() {
+        Random rnd = new Random();
+        int number = rnd.nextInt(999999);
+        return String.format("%06d", number);
+    }
 }

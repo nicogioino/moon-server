@@ -2,14 +2,9 @@ package com.example.demo.controller.post;
 
 import com.example.demo.dto.post.PostDTO;
 import com.example.demo.dto.post.PostListingDTO;
-import com.example.demo.model.Post;
-import com.example.demo.model.Tag;
-import com.example.demo.model.User;
+import com.example.demo.model.*;
 import com.example.demo.security.util.JwtUtil;
-import com.example.demo.service.FollowService;
-import com.example.demo.service.PostService;
-import com.example.demo.service.TagService;
-import com.example.demo.service.UserService;
+import com.example.demo.service.*;
 import com.example.demo.validators.PostInputValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,15 +23,18 @@ public class PostController {
     private final UserService userService;
     private  final TagService tagService;
 
+    private final ReactService reactService;
+
     @Autowired
     private JwtUtil jwtUtil;
 
     @Autowired
-    public PostController(PostService postService, UserService userService, TagService tagService, FollowService followService) {
+    public PostController(PostService postService, UserService userService, TagService tagService, FollowService followService, ReactService reactService) {
         this.postService = postService;
         this.userService = userService;
         this.tagService = tagService;
         this.followService = followService;
+        this.reactService = reactService;
     }
 
     @PostMapping
@@ -91,4 +89,27 @@ public class PostController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+    @PostMapping("/react/{postId}")
+    public ResponseEntity<?> reactPost(@PathVariable("postId") Long postId, @RequestHeader String Authorization, ReactType reactType){
+        try{
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            React react = reactService.react(user.getId(), postId, reactType);
+            return new ResponseEntity<>(react, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @DeleteMapping("/react/{postId}")
+    public ResponseEntity<?> unReactPost(@PathVariable("postId") Long postId, @RequestHeader String Authorization){
+        try{
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            reactService.unReact(user.getId(), postId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
