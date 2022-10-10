@@ -72,4 +72,9 @@ public class UserService{
         ));
     }
 
+    public User findUserById(String userId) {
+        return userRepository.findById(Long.parseLong(userId)).orElseThrow(() -> new IllegalStateException(
+                "user with id " + userId + " does not exists"
+        ));
+    }
 }
