@@ -117,6 +117,17 @@ public class UserController {
         }
     }
 
+    @RequestMapping(path = "/my-profile", method = RequestMethod.GET)
+    public ResponseEntity<?> getMyProfile(@RequestHeader String Authorization){
+        try {
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            return getUserProfile(user.getId().toString(), Authorization);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping(path = "/hello")
     public Long[] hello(@RequestHeader String Authorization) {
         String email = jwtUtil.extractEmail(Authorization);
