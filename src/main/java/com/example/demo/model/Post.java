@@ -34,7 +34,7 @@ public class Post extends BaseEntity{
     @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
     private Boolean deleted = false;
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
     public void deletePost(){
@@ -115,6 +115,8 @@ public class Post extends BaseEntity{
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
+
+
 
     public Set<User> getBookmarkedByUsers() {
         return bookmarkedByUsers;

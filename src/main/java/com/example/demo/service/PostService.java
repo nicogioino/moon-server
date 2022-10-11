@@ -79,6 +79,8 @@ public class PostService {
                 .orElseThrow(() -> new IllegalStateException(
                         "Post with id " + postId + " does not exist"
                 ));
+        if(post.isDeleted()) throw new IllegalStateException("Post is deleted");
+
         Set<Post> bookmarkedPosts = user.getBookmarkedPosts();
         if(!bookmarkedPosts.contains(post)) {
             bookmarkedPosts.add(post);
@@ -93,6 +95,7 @@ public class PostService {
                 .orElseThrow(() -> new IllegalStateException(
                         "Post with id " + postId + " does not exist"
                 ));
+        if(post.isDeleted()) throw new IllegalStateException("Post is deleted");
         Set<Post> bookmarkedPosts = user.getBookmarkedPosts();
         if(bookmarkedPosts.contains(post)) {
             bookmarkedPosts.remove(post);
