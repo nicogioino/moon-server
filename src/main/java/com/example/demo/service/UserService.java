@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.user.UserCreationDTO;
 import com.example.demo.dto.user.UserUpdateDTO;
+import com.example.demo.model.Post;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 
@@ -11,6 +12,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
 
 
 @Service
@@ -72,4 +74,14 @@ public class UserService{
         ));
     }
 
+    public void save(User user) {
+        userRepository.save(user);
+    }
+
+    public Set<Post> getBookmarkedPosts(User user) {
+        Set<Post> posts = user.getBookmarkedPosts();
+        posts.removeIf(Post::isDeleted);
+        return posts;
+
+    }
 }

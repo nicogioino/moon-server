@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 @RestController
 @CrossOrigin(origins= "*")
@@ -114,4 +115,42 @@ public class PostController {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/bookmarks")
+    public ResponseEntity<?> getAllBookmarks(@RequestHeader String Authorization) {
+        try {
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            Set<Post> bookmarks = userService.getBookmarkedPosts(user);
+            Post[] posts = bookmarks.toArray(new Post[bookmarks.size()]);
+            return new ResponseEntity<>(PostListingDTO.fromPosts(posts), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(method= RequestMethod.POST, path= "/bookmarks/{postId}")
+    public ResponseEntity<?> bookmarkPost(@PathVariable("postId") Long postId, @RequestHeader String Authorization){
+        try{
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            postService.bookmarkPost(postId, user, userService);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(method= RequestMethod.DELETE, path= "/bookmarks/{postId}")
+    public ResponseEntity<?> deleteBookmark(@PathVariable("postId") Long postId, @RequestHeader String Authorization){
+        try{
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            postService.deleteBookmark(postId, user, userService);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

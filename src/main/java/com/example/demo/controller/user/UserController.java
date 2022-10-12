@@ -7,6 +7,7 @@ import com.example.demo.dto.user.UserCreationDTO;
 import com.example.demo.dto.user.UserListingDTO;
 import com.example.demo.dto.user.UserUpdateDTO;
 import com.example.demo.model.Follow;
+import com.example.demo.model.Post;
 import com.example.demo.model.User;
 import com.example.demo.security.util.JwtUtil;
 import com.example.demo.service.FollowService;
@@ -17,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 
 @RestController
@@ -95,4 +98,6 @@ public class UserController {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
+
+
 }

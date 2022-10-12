@@ -28,10 +28,13 @@ public class Post extends BaseEntity{
     @Size(min=1, max =500)
     private String text;
 
+    @ManyToMany(mappedBy = "bookmarkedPosts")
+    Set<User> bookmarkedByUsers;
+
     @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
     private Boolean deleted = false;
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
     public void deletePost(){
@@ -113,6 +116,11 @@ public class Post extends BaseEntity{
         this.tags = tags;
     }
 
+
+
+    public Set<User> getBookmarkedByUsers() {
+        return bookmarkedByUsers;
+    }
 
     @Override
     public String toString() {

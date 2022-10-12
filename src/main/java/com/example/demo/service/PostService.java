@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 @Service
 public class PostService {
@@ -71,5 +72,36 @@ public class PostService {
                 .orElseThrow(() -> new IllegalStateException(
                         "post with id " + postId + " does not exists"
                 ));
+    }
+
+    public void bookmarkPost(Long postId, User user, UserService userService) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Post with id " + postId + " does not exist"
+                ));
+        if(post.isDeleted()) throw new IllegalStateException("Post is deleted");
+
+        Set<Post> bookmarkedPosts = user.getBookmarkedPosts();
+        if(!bookmarkedPosts.contains(post)) {
+            bookmarkedPosts.add(post);
+            post.getBookmarkedByUsers().add(user);
+            userService.save(user);
+            postRepository.save(post);
+        } else throw new IllegalArgumentException("Post already bookmarked");
+    }
+
+    public void deleteBookmark(Long postId, User user, UserService userService) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Post with id " + postId + " does not exist"
+                ));
+        if(post.isDeleted()) throw new IllegalStateException("Post is deleted");
+        Set<Post> bookmarkedPosts = user.getBookmarkedPosts();
+        if(bookmarkedPosts.contains(post)) {
+            bookmarkedPosts.remove(post);
+            post.getBookmarkedByUsers().remove(user);
+            userService.save(user);
+            postRepository.save(post);
+        } else throw new IllegalArgumentException("Post not bookmarked");
     }
 }
