@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dto.user.UserCreationDTO;
 import com.example.demo.dto.user.UserUpdateDTO;
 import com.example.demo.model.Post;
+import com.example.demo.model.Tag;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 
@@ -12,6 +13,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 
@@ -73,6 +75,10 @@ public class UserService{
                 "user with email " + email + " does not exists"
         ));
     }
+    public ArrayList<Tag> getFollowedTags(User user) {
+        return userRepository.findFollowedTagsById(user.getId());
+    }
+
 
     public void save(User user) {
         userRepository.save(user);
