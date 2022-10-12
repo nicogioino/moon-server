@@ -89,23 +89,23 @@ public class PostController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @PostMapping("/react/{postId}")
-    public ResponseEntity<?> reactPost(@PathVariable("postId") Long postId, @RequestHeader String Authorization, ReactType reactType){
+    @PostMapping("/react")
+    public ResponseEntity<?> reactPost(Post post, @RequestHeader String Authorization, ReactType reactType){
         try{
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
-            React react = reactService.react(user.getId(), postId, reactType);
+            React react = reactService.react(user, post, reactType);
             return new ResponseEntity<>(react, HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @DeleteMapping("/react/{postId}")
-    public ResponseEntity<?> unReactPost(@PathVariable("postId") Long postId, @RequestHeader String Authorization){
+    @DeleteMapping("/react")
+    public ResponseEntity<?> unReactPost(Post post, @RequestHeader String Authorization){
         try{
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
-            reactService.unReact(user.getId(), postId);
+            reactService.unReact(user, post);
             return new ResponseEntity<>(HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

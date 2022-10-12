@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dto.user.UserCreationDTO;
 import com.example.demo.dto.user.UserUpdateDTO;
 import com.example.demo.model.PasswordResetToken;
+import com.example.demo.model.Tag;
 import com.example.demo.model.User;
 import com.example.demo.repository.PasswordTokenRepository;
 import com.example.demo.repository.UserRepository;
@@ -14,6 +15,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
 
@@ -76,13 +78,16 @@ public class UserService{
                 "user with email " + email + " does not exists"
         ));
     }
+    public ArrayList<Tag> getFollowedTags(User user) {
+        return userRepository.findFollowedTagsById(user.getId());
+    }
 
     public void createPasswordResetTokenForUser(User user, String token) {
         PasswordResetToken myToken = new PasswordResetToken(token, user);
         passwordTokenRepository.save(myToken);
     }
 
-    private SimpleMailMessage constructResetTokenEmail(String contextPath, Locale locale, String token, User user) {
+   /* private SimpleMailMessage constructResetTokenEmail(String contextPath, Locale locale, String token, User user) {
         String url = contextPath + "/user/changePassword?token=" + token;
         String message = messages.getMessage("message.resetPassword",
                 null, locale);
@@ -109,5 +114,5 @@ public class UserService{
         Random rnd = new Random();
         int number = rnd.nextInt(999999);
         return String.format("%06d", number);
-    }
+    }*/
 }

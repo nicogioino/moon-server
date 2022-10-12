@@ -27,6 +27,19 @@ public class Tag extends BaseEntity{
     @JoinColumn(name="user_id", nullable=false)
     private User user;
 
+    @ManyToMany
+    @JoinTable(
+            name = "users_following_tags",
+            joinColumns = {
+                    @JoinColumn(name = "tag_id", nullable = false)
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "user_id", nullable = false)
+            }
+    )
+    private Set<User> followers = new HashSet<>();
+
+
     public Tag(Long id, String name) {
         this.id = id;
         this.name = name;

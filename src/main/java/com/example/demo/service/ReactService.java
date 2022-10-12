@@ -37,8 +37,9 @@ public class ReactService {
         if (existingReact == null) {
             React newReact = new React(user, post, reactType);
             return reactRepository.save(newReact);
-        } else {
-            return existingReact;
+        } else { //Overrides the existing React with a new React
+            existingReact.setReactType(reactType);
+            return reactRepository.save(existingReact);
         }
     }
 

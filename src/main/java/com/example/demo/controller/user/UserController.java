@@ -111,20 +111,6 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @PostMapping("/user/resetPassword")
-    public ResponseEntity<?> resetPassword(HttpServletRequest request, @RequestParam("email") String userEmail) {
-        User user = userService.findUserByEmail(userEmail);
-        if (user == null) {
-            return new ResponseEntity<>("Email not found", HttpStatus.BAD_REQUEST);
-        }
-        String token = UUID.randomUUID().toString();
-        userService.createPasswordResetTokenForUser(user, token);
-        mailSender.send(constructResetTokenEmail(getAppUrl(request),
-                request.getLocale(), token, user));
-        return new GenericResponse(
-                messages.getMessage("message.resetPasswordEmail", null,
-                        request.getLocale()));
-    }
     @GetMapping
     public ResponseEntity<?> getFollowedUsers(@RequestHeader String Authorization) {
         try {
@@ -140,10 +126,25 @@ public class UserController {
         try {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
-            return new ResponseEntity<>(tagService.getUserTags(user), HttpStatus.OK);
+            return new ResponseEntity<>(userService.getFollowedTags(user), HttpStatus.OK);
         } catch (Error e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+    //Password Recovery
+    /*@PostMapping("/user/resetPassword")
+    public ResponseEntity<?> resetPassword(HttpServletRequest request, @RequestParam("email") String userEmail) {
+        User user = userService.findUserByEmail(userEmail);
+        if (user == null) {
+            return new ResponseEntity<>("Email not found", HttpStatus.BAD_REQUEST);
+        }
+        String token = UUID.randomUUID().toString();
+        userService.createPasswordResetTokenForUser(user, token);
+        mailSender.send(constructResetTokenEmail(getAppUrl(request),
+                request.getLocale(), token, user));
+        return new GenericResponse(
+                messages.getMessage("message.resetPasswordEmail", null,
+                        request.getLocale()));
     }
     @GetMapping("/user/changePassword")
     public String showChangePasswordPage(Locale locale, Model model, @RequestParam("token") String token) {
@@ -192,7 +193,7 @@ public class UserController {
     private boolean isTokenExpired(PasswordResetToken passToken) {
         final Calendar cal = Calendar.getInstance();
         return passToken.getExpiryDate().before(cal.getTime());
-    }
+    }*/
 
 
 }

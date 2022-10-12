@@ -6,9 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -31,6 +29,18 @@ public class User extends BaseEntity{
     @Column(name = "password", nullable = false)
     @Size(min=8, max =255)
     private String password;
+
+    @ManyToMany
+    @JoinTable(
+            name = "users_following_tags",
+            joinColumns = {
+                    @JoinColumn(name = "user_id", nullable = false)
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "tag_id", nullable = false)
+            }
+    )
+    private List<Tag> followedTag = new ArrayList<>();
 
     public User(String username, String mail, String password) {
         this.username = username;
@@ -68,5 +78,8 @@ public class User extends BaseEntity{
     public String getBio() {return bio;}
 
     public void setBio(String bio) {this.bio = bio;}
+
+    public List<Tag> getFollowedTags() {return followedTag;}
+
 
 }
