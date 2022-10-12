@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -48,5 +49,7 @@ public class TagService {
         }
         return s;
     }
-
+    public List<Tag> getUserTags(User user) {
+        return tagRepository.findByUser(user.getId());
+    }
 }
