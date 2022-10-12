@@ -121,7 +121,7 @@ public class PostController {
         try {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
-            Set<Post> bookmarks = user.getBookmarkedPosts();
+            Set<Post> bookmarks = userService.getBookmarkedPosts(user);
             Post[] posts = bookmarks.toArray(new Post[bookmarks.size()]);
             return new ResponseEntity<>(PostListingDTO.fromPosts(posts), HttpStatus.OK);
         } catch (Exception e) {
