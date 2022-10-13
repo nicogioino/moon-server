@@ -8,6 +8,7 @@ import com.example.demo.dto.user.UserListingDTO;
 import com.example.demo.dto.user.UserUpdateDTO;
 import com.example.demo.model.Follow;
 import com.example.demo.model.Post;
+import com.example.demo.model.Tag;
 import com.example.demo.model.User;
 import com.example.demo.security.util.JwtUtil;
 import com.example.demo.service.FollowService;
@@ -114,6 +115,26 @@ public class UserController {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
             return new ResponseEntity<>(userService.getFollowedTags(user), HttpStatus.OK);
+        } catch (Error e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping(path = "/follow/tag")
+    public ResponseEntity<?> followTag(@RequestHeader String Authorization, @RequestBody Tag tag) {
+        try {
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            return new ResponseEntity<>(userService.followTag(user, tag), HttpStatus.OK);
+        } catch (Error e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping(path = "/unfollow/tag")
+    public ResponseEntity<?> unfollowTag(@RequestHeader String Authorization, @RequestBody Tag tag) {
+        try {
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            return new ResponseEntity<>(userService.unfollowTag(user, tag), HttpStatus.OK);
         } catch (Error e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

@@ -12,9 +12,11 @@ import java.util.Optional;
 @Service
 public class TagService {
     private final TagRepository tagRepository;
+    private final UserService userService;
     @Autowired
-    public TagService(TagRepository tagRepository) {
+    public TagService(TagRepository tagRepository, UserService userService) {
         this.tagRepository = tagRepository;
+        this.userService = userService;
     }
 
     public ArrayList<Tag> createTags(String[] tags, User user) {
@@ -24,6 +26,7 @@ public class TagService {
         for(String tagName: tags){
             if(!nameOfTags.contains(tagName)){
                 Tag newTag = new Tag(tagName, user);
+                userService.followTag(user, newTag);
                 respondedTags.add(tagRepository.save(newTag));
             }
         }
