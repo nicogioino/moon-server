@@ -98,7 +98,7 @@ public class UserController {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping
+    @GetMapping(path = "/followers")
     public ResponseEntity<?> getFollowedUsers(@RequestHeader String Authorization) {
         try {
             String email = jwtUtil.extractEmail(Authorization);
@@ -108,7 +108,7 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping
+    @GetMapping(path = "/tags")
     public ResponseEntity<?> getFollowedTags(@RequestHeader String Authorization) {
         try {
             String email = jwtUtil.extractEmail(Authorization);

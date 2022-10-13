@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 
@@ -46,7 +47,6 @@ public class UserService{
         return user;
     }
 
-
     public User create(UserCreationDTO userDto) {
         if (usernameAlreadyExists(userDto.getUsername())) {
             throw new IllegalStateException("El nombre de usuario ya esta en uso");
@@ -75,9 +75,7 @@ public class UserService{
                 "user with email " + email + " does not exists"
         ));
     }
-    public ArrayList<Tag> getFollowedTags(User user) {
-        return userRepository.findFollowedTagsById(user.getId());
-    }
+    public List<Tag> getFollowedTags(User user) {return userRepository.findFollowedTagsById(user.getId());}
 
 
     public void save(User user) {

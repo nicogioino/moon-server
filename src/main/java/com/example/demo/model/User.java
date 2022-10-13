@@ -49,7 +49,7 @@ public class User extends BaseEntity{
                     @JoinColumn(name = "tag_id", nullable = false)
             }
     )
-    private ArrayList<Tag> followedTags = new ArrayList<>();
+    private List<Tag> followedTags = new ArrayList<>();
 
     public User(String username, String mail, String password) {
         this.username = username;
@@ -92,5 +92,5 @@ public class User extends BaseEntity{
         return bookmarkedPosts;
     }
 
-    public ArrayList<Tag> getFollowedTags() {return followedTags;}
+    public List<Tag> getFollowedTags() {return followedTags;}
 }

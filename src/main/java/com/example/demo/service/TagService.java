@@ -1,14 +1,10 @@
 package com.example.demo.service;
 
-
-
 import com.example.demo.model.Tag;
 import com.example.demo.model.User;
 import com.example.demo.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +20,7 @@ public class TagService {
     public ArrayList<Tag> createTags(String[] tags, User user) {
         ArrayList<Tag> created_tags = tagRepository.getTagsByName(tags);
         ArrayList<Tag> respondedTags = new ArrayList<>(created_tags);
-        ArrayList<String> nameOfTags = getNameOfTagsOf(created_tags);
+        List<String> nameOfTags = getNameOfTagsOf(created_tags);
         for(String tagName: tags){
             if(!nameOfTags.contains(tagName)){
                 Tag newTag = new Tag(tagName, user);
@@ -42,8 +38,8 @@ public class TagService {
         }
     }
 
-    private ArrayList<String> getNameOfTagsOf(ArrayList<Tag> created_tags) {
-        ArrayList<String> s = new ArrayList<>();
+    private List<String> getNameOfTagsOf(ArrayList<Tag> created_tags) {
+        List<String> s = new ArrayList<>();
         for(Tag tag : created_tags) {
             s.add(tag.getName());
         }
