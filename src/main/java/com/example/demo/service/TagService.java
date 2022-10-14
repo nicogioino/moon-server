@@ -26,8 +26,8 @@ public class TagService {
         for(String tagName: tags){
             if(!nameOfTags.contains(tagName)){
                 Tag newTag = new Tag(tagName, user);
-                userService.followTag(user, newTag);
                 respondedTags.add(tagRepository.save(newTag));
+                userService.followTag(user, newTag);
             }
         }
         return respondedTags;
@@ -51,4 +51,13 @@ public class TagService {
     public List<Tag> getUserTags(User user) {
         return tagRepository.findByUser(user.getId());
     }
+
+    public Tag getTagByName(String name) {
+        return tagRepository.getTagByName(name);
+    }
+    public Tag getTagById(Long id) {
+        return tagRepository.getTagById(id);
+    }
+
+    public List<Tag> getTagsFollowedByUser(User user) {return tagRepository.findByUser(user.getId());}
 }

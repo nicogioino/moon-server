@@ -39,17 +39,6 @@ public class User extends BaseEntity{
     )
     Set<Post> bookmarkedPosts;
 
-    @ManyToMany
-    @JoinTable(
-            name = "users_following_tags",
-            joinColumns = {
-                    @JoinColumn(name = "user_id", nullable = false)
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "tag_id", nullable = false)
-            }
-    )
-    private List<Tag> followedTags = new ArrayList<>();
 
     public User(String username, String mail, String password) {
         this.username = username;
@@ -92,5 +81,4 @@ public class User extends BaseEntity{
         return bookmarkedPosts;
     }
 
-    public List<Tag> getFollowedTags() {return followedTags;}
 }

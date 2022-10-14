@@ -23,6 +23,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE  u.username = :username or u.email = :username")
     Optional<User> getUserByEmailOrUsername(String username);
 
-    @Query("SELECT u.followedTags FROM User u WHERE  u.id = :id")
-    ArrayList<Tag> findFollowedTagsById(Long id);
 }

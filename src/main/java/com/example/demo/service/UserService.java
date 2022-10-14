@@ -77,8 +77,6 @@ public class UserService{
                 "user with email " + email + " does not exists"
         ));
     }
-    public List<Tag> getFollowedTags(User user) {return userRepository.findFollowedTagsById(user.getId());}
-
 
     public void save(User user) {
         userRepository.save(user);
@@ -90,15 +88,11 @@ public class UserService{
         return posts;
     }
     public Tag followTag(User user, Tag tag) {
-        user.getFollowedTags().add(tag);
-        userRepository.save(user);
         tag.getFollowers().add(user);
         tagRepository.save(tag);
         return tag;
     }
     public Tag unfollowTag(User user, Tag tag) {
-        user.getFollowedTags().remove(tag);
-        userRepository.save(user);
         tag.getFollowers().remove(user);
         tagRepository.save(tag);
         return tag;

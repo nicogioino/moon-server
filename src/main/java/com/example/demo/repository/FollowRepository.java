@@ -15,4 +15,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     Long[] findFollows(Long id);
     @Query("SELECT f.followed FROM Follow f WHERE  f.follower.id = :id and f.deleted = false")
     Optional<List<User>> findFollowedUsersByFollowerId(Long id);
+
+    @Query("SELECT f.follower FROM Follow f WHERE  f.followed.id = :id and f.deleted = false")
+    Optional<List<User>> findFollowersByFollowedId(Long id);
 }
