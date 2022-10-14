@@ -8,8 +8,7 @@ import com.example.demo.model.User;
 import com.example.demo.repository.ReactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import java.util.Map;
 
 @Service
 public class ReactService {
@@ -21,33 +20,32 @@ public class ReactService {
         this.reactRepository = reactRepository;
     }
 
-    public React createIfNotExists(User user, Post post, ReactType reactType) {
-        Optional<React> existingReact = reactRepository.findByPostIdAndReactType(post.getId(),reactType);
-
-        if (existingReact.isEmpty()) {
-            React react = new React(user,post , reactType);
-            return reactRepository.save(react);
-        } else {
-            return react(user,post,reactType);
-        }
-    }
-
     public React react(User user, Post post, ReactType reactType) { //Assumes a user can only give one react to a post, regardless of type
         React existingReact = reactRepository.findByUserIdAndPostId(user.getId(),post.getId());
         if (existingReact == null) {
             React newReact = new React(user, post, reactType);
             return reactRepository.save(newReact);
-        } else { //Overrides the existing React with a new React
-            existingReact.setReactType(reactType);
-            return reactRepository.save(existingReact);
+        } else { //Overrides the existing React with a new React (Changes ReactType)
+            unReact(user,post);
+            React newReact = new React(user, post, reactType);
+            return reactRepository.save(newReact);
         }
     }
 
-    public void unReact(User user, Post post) {
+    public React unReact(User user, Post post) {
         React existingReact = reactRepository.findByUserIdAndPostId(user.getId(),post.getId());
         if (existingReact != null) {
             reactRepository.delete(existingReact);
         }
+        return existingReact;
     }
-    public Long countReactsByType(Long postId, ReactType type){return reactRepository.countReactsByPostIdAndReactType(postId, type);}
+    public Long countReactsByType(Long postId, ReactType reactType){return reactRepository.countReactsByPostIdAndReactType(postId, reactType);}
+
+    public Map<ReactType,Long> countReactsByPostId(Long postId){
+        Long applauseCount = reactRepository.countReactsByPostIdAndReactType(postId, ReactType.APPLAUSE);
+        Long likeCount = reactRepository.countReactsByPostIdAndReactType(postId, ReactType.LIKE);
+        Long loveCount = reactRepository.countReactsByPostIdAndReactType(postId, ReactType.LOVE);
+       return Map.of(ReactType.APPLAUSE, applauseCount, ReactType.LIKE, likeCount, ReactType.LOVE, loveCount);
+    }
+
 }
