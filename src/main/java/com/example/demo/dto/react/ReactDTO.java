@@ -35,15 +35,14 @@ public class ReactDTO {
 
     public Long getLikeCount() {return likeCount;}
 
-
     public Long getLoveCount() {return loveCount;}
 
     @Override
     public String toString() {
         return "{" +
-                "applause: " + applauseCount +
-                ", like: " + likeCount +
-                ", love: " + loveCount +
+                "APPLAUSE: " + applauseCount +
+                ", LIKE: " + likeCount +
+                ", LOVE: " + loveCount +
                 '}';
     }
 }

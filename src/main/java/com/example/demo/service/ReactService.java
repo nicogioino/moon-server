@@ -41,12 +41,11 @@ public class ReactService {
     }
     public Long countReactsByType(Long postId, ReactType reactType){return reactRepository.countReactsByPostIdAndReactType(postId, reactType);}
 
-    public String countReactsByPostId(Long postId){
+    public ReactDTO countReactsByPostId(Long postId){
         Long applauseCount = reactRepository.countReactsByPostIdAndReactType(postId, ReactType.APPLAUSE);
         Long likeCount = reactRepository.countReactsByPostIdAndReactType(postId, ReactType.LIKE);
         Long loveCount = reactRepository.countReactsByPostIdAndReactType(postId, ReactType.LOVE);
-        ReactDTO reactDTO = new ReactDTO(applauseCount, likeCount, loveCount);
-       return reactDTO.toString();
+        return new ReactDTO(applauseCount, likeCount, loveCount);
     }
 
     public React getReactsByUserAndPost(User user, Long postId) {
