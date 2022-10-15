@@ -48,4 +48,7 @@ public class ReactService {
        return Map.of(ReactType.APPLAUSE, applauseCount, ReactType.LIKE, likeCount, ReactType.LOVE, loveCount);
     }
 
+    public React getReactsByUserAndPost(User user, Long postId) {
+        return reactRepository.findByUserIdAndPostId(user.getId(),postId);
+    }
 }
