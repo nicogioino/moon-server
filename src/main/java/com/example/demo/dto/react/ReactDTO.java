@@ -41,9 +41,9 @@ public class ReactDTO {
     @Override
     public String toString() {
         return "{" +
-                "APPLAUSE: " + applauseCount +
-                ", LIKE: " + likeCount +
-                ", LOVE: " + loveCount +
+                "applause: " + applauseCount +
+                ", like: " + likeCount +
+                ", love: " + loveCount +
                 '}';
     }
 }
