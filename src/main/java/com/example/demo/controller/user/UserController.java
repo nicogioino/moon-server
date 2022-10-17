@@ -129,6 +129,16 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+    @GetMapping(path = "/tags/created")
+    public ResponseEntity<?> getCreatedTags(@RequestHeader String Authorization) {
+        try {
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            return new ResponseEntity<>(tagService.getUserTags(user), HttpStatus.OK);
+        } catch (Error e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
     @PostMapping(path = "/follow/tag/{tagId}")
     public ResponseEntity<?> followTag(@RequestHeader String Authorization, @PathVariable Long tagId) {
         try {
