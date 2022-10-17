@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 
 import com.example.demo.dto.react.ReactDTO;
+import com.example.demo.dto.react.ReactsListingDTO;
 import com.example.demo.model.Post;
 import com.example.demo.model.React;
 import com.example.demo.model.ReactType;
@@ -50,5 +51,15 @@ public class ReactService {
 
     public React getReactsByUserAndPost(User user, Long postId) {
         return reactRepository.findByUserIdAndPostId(user.getId(),postId);
+    }
+
+    public ReactsListingDTO[] getReacts(Post[] posts) {
+        ReactsListingDTO[] reactsListingDTOS = new ReactsListingDTO[posts.length];
+        for (int i = 0; i < posts.length; i++) {
+            ReactDTO reactDTO = countReactsByPostId(posts[i].getId());
+            ReactsListingDTO reactsListingDTO = new ReactsListingDTO(reactDTO.getLikeCount(), reactDTO.getApplauseCount(), reactDTO.getLoveCount());
+            reactsListingDTOS[i] = reactsListingDTO;
+        }
+        return reactsListingDTOS;
     }
 }

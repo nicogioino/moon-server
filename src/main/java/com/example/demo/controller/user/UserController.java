@@ -169,7 +169,14 @@ public class UserController {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
             Post post = postService.getPostById(postId);
-            return new ResponseEntity<>(reactService.unReact(user, post), HttpStatus.OK);
+            React react = reactService.unReact(user, post);
+            if (react != null) {
+                return new ResponseEntity<>(react, HttpStatus.OK);
+            }
+            else {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+
         } catch (Error e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
