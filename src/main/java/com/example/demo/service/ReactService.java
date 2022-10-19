@@ -11,6 +11,8 @@ import com.example.demo.repository.ReactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ReactService {
 
@@ -21,24 +23,26 @@ public class ReactService {
         this.reactRepository = reactRepository;
     }
 
-    public React react(User user, Post post, ReactType reactType) { //Assumes a user can only give one react to a post, regardless of type
-        React existingReact = reactRepository.findByUserIdAndPostId(user.getId(),post.getId());
+    public React react(User user, Post post, ReactType reactType) { //A user can react once per reactType
+        List<React> existingReact = reactRepository.findByUserIdAndPostId(user.getId(),post.getId());
         if (existingReact == null) {
             React newReact = new React(user, post, reactType);
             return reactRepository.save(newReact);
-        } else { //Overrides the existing React with a new React (Changes ReactType)
-            unReact(user,post);
+        } else if(existingReact.stream().noneMatch(react -> react.getReactType() == reactType)){
             React newReact = new React(user, post, reactType);
             return reactRepository.save(newReact);
         }
+        return existingReact.stream().filter(react -> react.getReactType() == reactType).findFirst().get();
     }
 
-    public React unReact(User user, Post post) {
-        React existingReact = reactRepository.findByUserIdAndPostId(user.getId(),post.getId());
-        if (existingReact != null) {
-            reactRepository.delete(existingReact);
-        }
-        return existingReact;
+    public React unReact(User user, Post post,ReactType reactType) {
+        List<React> existingReact = reactRepository.findByUserIdAndPostId(user.getId(),post.getId());
+        React toUnreact = existingReact.stream().filter(react -> react.getReactType() == reactType).findFirst().orElse(null);
+            if (toUnreact != null) {
+                reactRepository.delete(toUnreact);
+                return toUnreact;
+            }
+        return toUnreact;
     }
     public Long countReactsByType(Long postId, ReactType reactType){return reactRepository.countReactsByPostIdAndReactType(postId, reactType);}
 
@@ -49,7 +53,7 @@ public class ReactService {
         return new ReactDTO(applauseCount, likeCount, loveCount);
     }
 
-    public React getReactsByUserAndPost(User user, Long postId) {
+    public List<React> getReactsByUserAndPost(User user, Long postId) {
         return reactRepository.findByUserIdAndPostId(user.getId(),postId);
     }
 

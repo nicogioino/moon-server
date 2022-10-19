@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -158,23 +160,26 @@ public class UserController {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
             Post post = postService.getPostById(postId);
+            if (post == null) {
+                return new ResponseEntity<>(ErrorDTO.fromMessage("Post does not exist"), HttpStatus.BAD_REQUEST);
+            }
             return new ResponseEntity<>(reactService.react(user, post, reactType), HttpStatus.OK);
         } catch (Error e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
     @DeleteMapping(path = "/react/{postId}")
-    public ResponseEntity<?> unReact(@RequestHeader String Authorization, @PathVariable Long postId) {
+    public ResponseEntity<?> unReact(@RequestHeader String Authorization, @PathVariable Long postId, @RequestBody ReactType reactType) {
         try {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
             Post post = postService.getPostById(postId);
-            React react = reactService.unReact(user, post);
+            React react = reactService.unReact(user, post, reactType);
             if (react != null) {
                 return new ResponseEntity<>(react, HttpStatus.OK);
             }
             else {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(ErrorDTO.fromMessage("No reaction to this post"), HttpStatus.BAD_REQUEST);
             }
 
         } catch (Error e) {
@@ -202,7 +207,8 @@ public class UserController {
         try {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
-            return new ResponseEntity<>(reactService.getReactsByUserAndPost(user, postId).getReactType(), HttpStatus.OK);
+            List<React> userReacts = reactService.getReactsByUserAndPost(user, postId);
+            return new ResponseEntity<>(userReacts, HttpStatus.OK);
         } catch (Error e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
