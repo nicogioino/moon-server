@@ -49,4 +49,13 @@ public class FollowService {
         Long[] ids = followRepository.findFollows(user.getId());
         return ids;
     }
+
+    public List<User> getFollowedUsers(User user) {
+        Optional<List<User>> users = followRepository.findFollowedUsersByFollowerId(user.getId());
+        return users.orElseGet(ArrayList::new);
+    }
+    public List<User> getFollowers(User user) {
+        Optional<List<User>> users = followRepository.findFollowersByFollowedId(user.getId());
+        return users.orElseGet(ArrayList::new);
+    }
 }

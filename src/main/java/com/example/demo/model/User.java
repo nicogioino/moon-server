@@ -6,10 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -41,6 +38,7 @@ public class User extends BaseEntity{
 
     )
     Set<Post> bookmarkedPosts;
+
 
     public User(String username, String mail, String password) {
         this.username = username;
@@ -82,4 +80,5 @@ public class User extends BaseEntity{
     public Set<Post> getBookmarkedPosts() {
         return bookmarkedPosts;
     }
+
 }
