@@ -3,6 +3,7 @@ package com.example.demo.controller.user;
 import com.example.demo.dto.error.ErrorDTO;
 import com.example.demo.dto.follow.FollowDTO;
 import com.example.demo.dto.follow.FollowListingDTO;
+import com.example.demo.dto.tag.TagListingDTO;
 import com.example.demo.dto.user.UserCreationDTO;
 import com.example.demo.dto.user.UserListingDTO;
 import com.example.demo.dto.user.UserUpdateDTO;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -128,7 +130,8 @@ public class UserController {
         try {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
-            return new ResponseEntity<>(tagService.getTagsFollowedByUser(user), HttpStatus.OK);
+            List<TagListingDTO> tags = tagService.getTagsFollowedByUserDTO(user);
+            return new ResponseEntity<>(tags, HttpStatus.OK);
         } catch (Error e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

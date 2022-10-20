@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.tag.TagListingDTO;
 import com.example.demo.model.Tag;
 import com.example.demo.model.User;
 import com.example.demo.repository.TagRepository;
@@ -68,4 +69,15 @@ public class TagService {
             }
         }
         return followedTags;}
+
+    public List<TagListingDTO> getTagsFollowedByUserDTO(User user) {
+        List<Tag> followedTags = getTagsFollowedByUser(user);
+        List<TagListingDTO> followedTagsDTO = new ArrayList<>();
+        for(Tag tag : followedTags) {
+            followedTagsDTO.add(TagListingDTO.fromTag(tag.getName()));
+        }
+        return followedTagsDTO;
+    }
+
+
 }
