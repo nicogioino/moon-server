@@ -59,5 +59,13 @@ public class TagService {
         return tagRepository.getTagById(id);
     }
 
-    public List<Tag> getTagsFollowedByUser(User user) {return tagRepository.findByUser(user.getId());}
+    public List<Tag> getTagsFollowedByUser(User user) {
+        List<Tag> allTags = tagRepository.findAll();
+        List<Tag> followedTags = new ArrayList<>();
+        for(Tag tag : allTags) {
+            if(tag.getFollowers().contains(user)) {
+                followedTags.add(tag);
+            }
+        }
+        return followedTags;}
 }

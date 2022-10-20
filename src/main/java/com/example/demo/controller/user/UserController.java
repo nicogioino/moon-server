@@ -94,6 +94,7 @@ public class UserController {
     public ResponseEntity<?> unfollow(@RequestHeader String Authorization, @RequestBody FollowDTO followDTO) {
         try {
             User possibleFollowed = followInputValidator.userExists(userService, followDTO);
+            System.out.println(possibleFollowed);
             String email = jwtUtil.extractEmail(Authorization);
             User follower = userService.findUserByEmail(email);
             Follow follow = followService.unfollow(follower, possibleFollowed);
@@ -128,6 +129,16 @@ public class UserController {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
             return new ResponseEntity<>(tagService.getTagsFollowedByUser(user), HttpStatus.OK);
+        } catch (Error e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping(path = "/tags/created")
+    public ResponseEntity<?> getCreatedTags(@RequestHeader String Authorization) {
+        try {
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            return new ResponseEntity<>(tagService.getUserTags(user), HttpStatus.OK);
         } catch (Error e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
