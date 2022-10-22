@@ -104,4 +104,12 @@ public class PostService {
             postRepository.save(post);
         } else throw new IllegalArgumentException("Post not bookmarked");
     }
+
+    public Post getPostById(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "Post with id " + postId + " does not exist"
+                ));
+        return post;
+    }
 }
