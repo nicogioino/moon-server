@@ -3,14 +3,12 @@ package com.example.demo.controller.post;
 import com.example.demo.dto.error.ErrorDTO;
 import com.example.demo.dto.post.PostDTO;
 import com.example.demo.dto.post.PostListingDTO;
+import com.example.demo.dto.react.ReactsListingDTO;
 import com.example.demo.model.Post;
 import com.example.demo.model.Tag;
 import com.example.demo.model.User;
 import com.example.demo.security.util.JwtUtil;
-import com.example.demo.service.FollowService;
-import com.example.demo.service.PostService;
-import com.example.demo.service.TagService;
-import com.example.demo.service.UserService;
+import com.example.demo.service.*;
 import com.example.demo.validators.PostInputValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -30,16 +27,18 @@ public class PostController {
     private final FollowService followService;
     private final UserService userService;
     private  final TagService tagService;
+    private final ReactService reactService;
 
     @Autowired
     private JwtUtil jwtUtil;
 
     @Autowired
-    public PostController(PostService postService, UserService userService, TagService tagService, FollowService followService) {
+    public PostController(PostService postService, UserService userService, TagService tagService, FollowService followService, ReactService reactService) {
         this.postService = postService;
         this.userService = userService;
         this.tagService = tagService;
         this.followService = followService;
+        this.reactService = reactService;
     }
 
     @PostMapping
@@ -63,7 +62,8 @@ public class PostController {
             User user = userService.findUserByEmail(email);
             Long[] usersId = followService.findUsersId(user);
             Post[] posts = postService.getAllPosts(usersId, user.getId());
-            return new ResponseEntity<>(PostListingDTO.fromPosts(posts), HttpStatus.CREATED);
+            ReactsListingDTO[] reacts = reactService.getReacts(posts);
+            return new ResponseEntity<>(PostListingDTO.fromPosts(posts,reacts), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
@@ -75,7 +75,8 @@ public class PostController {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
             Post[] posts = postService.getPostsFrom(user.getId());
-            return new ResponseEntity<>(PostListingDTO.fromPosts(posts), HttpStatus.CREATED);
+            ReactsListingDTO[] reacts = reactService.getReacts(posts);
+            return new ResponseEntity<>(PostListingDTO.fromPosts(posts,reacts), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
@@ -94,7 +95,8 @@ public class PostController {
     public ResponseEntity<?> getPostsFrom(@PathVariable("userId") Long userId, @RequestHeader String Authorization ){
         try{
             Post[] posts = postService.getPostsFrom(userId);
-            return new ResponseEntity<>(PostListingDTO.fromPosts(posts), HttpStatus.CREATED);
+            ReactsListingDTO[] reacts = reactService.getReacts(posts);
+            return new ResponseEntity<>(PostListingDTO.fromPosts(posts,reacts), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
@@ -133,7 +135,8 @@ public class PostController {
             User user = userService.findUserByEmail(email);
             Set<Post> bookmarks = userService.getBookmarkedPosts(user);
             Post[] posts = bookmarks.toArray(new Post[bookmarks.size()]);
-            return new ResponseEntity<>(PostListingDTO.fromPosts(posts), HttpStatus.OK);
+            ReactsListingDTO[] reacts = reactService.getReacts(posts);
+            return new ResponseEntity<>(PostListingDTO.fromPosts(posts,reacts), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
