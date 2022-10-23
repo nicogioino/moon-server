@@ -52,7 +52,7 @@ public class PostListingDTO {
     private static TagListingDTO[] generateTags(Set<Tag> tags) {
         ArrayList<TagListingDTO> arrayedTags = new ArrayList<>();
         for(Tag tag : tags){
-            arrayedTags.add(TagListingDTO.fromTag(tag.getName()));
+            arrayedTags.add(TagListingDTO.fromTag(tag));
         }
         TagListingDTO[] returned = new TagListingDTO[arrayedTags.size()];
         return arrayedTags.toArray(returned);

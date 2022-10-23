@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TagListingDTO {
+    Long id;
     String name;
 
     public static TagListingDTO fromTag(String name) {
@@ -17,6 +18,7 @@ public class TagListingDTO {
 
     public static TagListingDTO fromTag(Tag tag) {
         TagListingDTO tagListingDTO = new TagListingDTO();
+        tagListingDTO.setId(tag.getId());
         tagListingDTO.setName(tag.getName());
         return tagListingDTO;
     }
@@ -24,9 +26,17 @@ public class TagListingDTO {
     public static List<TagListingDTO> fromTags(List<Tag> tags) {
         List<TagListingDTO> toReturn = new ArrayList<>();
         for (Tag tag : tags) {
-            toReturn.add(TagListingDTO.fromTag(tag.getName()));
+            toReturn.add(TagListingDTO.fromTag(tag));
         }
         return toReturn;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
