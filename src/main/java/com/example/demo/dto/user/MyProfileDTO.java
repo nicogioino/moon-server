@@ -1,6 +1,7 @@
 package com.example.demo.dto.user;
 
 import com.example.demo.dto.post.PostListingDTO;
+import com.example.demo.dto.react.ReactsListingDTO;
 import com.example.demo.dto.tag.TagListingDTO;
 import com.example.demo.model.Post;
 import com.example.demo.model.Tag;
@@ -18,12 +19,12 @@ public class MyProfileDTO {
     private Integer followers;
     private List<TagListingDTO> followedTags;
 
-    public static MyProfileDTO fromUser(User user, Post[] posts, Integer followers, Integer following, List<Tag> tagsFollowed) {
+    public static MyProfileDTO fromUser(User user, Post[] posts, ReactsListingDTO[] reacts, Integer followers, Integer following, List<Tag> tagsFollowed) {
         MyProfileDTO myProfileDTO = new MyProfileDTO();
         myProfileDTO.setId(user.getId());
         myProfileDTO.setUsername(user.getUsername());
         myProfileDTO.setBio(user.getBio());
-        myProfileDTO.setPosts(PostListingDTO.fromPosts(posts));
+        myProfileDTO.setPosts(PostListingDTO.fromPosts(posts, reacts));
         myProfileDTO.setFollowers(followers);
         myProfileDTO.setFollowing(following);
         List<TagListingDTO> tagsDTOs = TagListingDTO.fromTags(tagsFollowed);

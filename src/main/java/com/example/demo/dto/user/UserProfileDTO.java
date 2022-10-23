@@ -2,6 +2,7 @@ package com.example.demo.dto.user;
 
 import com.example.demo.dto.post.PostDTO;
 import com.example.demo.dto.post.PostListingDTO;
+import com.example.demo.dto.react.ReactsListingDTO;
 import com.example.demo.model.Post;
 import com.example.demo.model.User;
 
@@ -16,12 +17,12 @@ public class UserProfileDTO {
     private Integer followers;
     private Integer followedTags;
 
-    public static UserProfileDTO fromUser(User user, Post[] posts, Integer followers, Integer following, Integer tagsFollowed) {
+    public static UserProfileDTO fromUser(User user, Post[] posts, ReactsListingDTO[] reacts, Integer followers, Integer following, Integer tagsFollowed) {
         UserProfileDTO userProfileDTO = new UserProfileDTO();
         userProfileDTO.setId(user.getId());
         userProfileDTO.setUsername(user.getUsername());
         userProfileDTO.setBio(user.getBio());
-        userProfileDTO.setPosts(PostListingDTO.fromPosts(posts));
+        userProfileDTO.setPosts(PostListingDTO.fromPosts(posts, reacts));
         userProfileDTO.setFollowers(followers);
         userProfileDTO.setFollowing(following);
 

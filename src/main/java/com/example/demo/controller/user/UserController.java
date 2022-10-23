@@ -3,6 +3,7 @@ package com.example.demo.controller.user;
 import com.example.demo.dto.error.ErrorDTO;
 import com.example.demo.dto.follow.FollowDTO;
 import com.example.demo.dto.follow.FollowListingDTO;
+import com.example.demo.dto.react.ReactsListingDTO;
 import com.example.demo.dto.tag.TagListingDTO;
 import com.example.demo.dto.user.UserCreationDTO;
 import com.example.demo.dto.user.UserListingDTO;
@@ -50,7 +51,6 @@ public class UserController {
     private final FollowInputValidator followInputValidator = new FollowInputValidator();
     private final FollowService followService;
 
-    private final PostService postService;
 
     @Autowired
     public UserController(UserService userService, TagService tagService, FollowService followService, PostService postService, ReactService reactService) {
@@ -127,10 +127,11 @@ public class UserController {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserById(userId);
             Post[] posts = postService.getPostsFrom(user.getId());
+            ReactsListingDTO[] reacts = reactService.getReacts(posts);
             Integer followers = followService.findFollowersId(user).length;
             Integer following = followService.findUsersId(user).length; // This returns the ids this user is following
             Integer tagsFollowed = tagService.getTagsFollowedByUser(user).size();
-            return new ResponseEntity<>(UserProfileDTO.fromUser(user, posts, followers, following, tagsFollowed), HttpStatus.OK);
+            return new ResponseEntity<>(UserProfileDTO.fromUser(user, posts, reacts, followers, following, tagsFollowed), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
@@ -142,10 +143,11 @@ public class UserController {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
             Post[] posts = postService.getPostsFrom(user.getId());
+            ReactsListingDTO[] reacts = reactService.getReacts(posts);
             Integer followers = followService.findFollowersId(user).length;
             Integer following = followService.findUsersId(user).length; // This returns the ids this user is following
             List<Tag> tagsFollowed = tagService.getTagsFollowedByUser(user);
-            return new ResponseEntity<>(MyProfileDTO.fromUser(user, posts, followers, following, tagsFollowed), HttpStatus.OK);
+            return new ResponseEntity<>(MyProfileDTO.fromUser(user, posts, reacts, followers, following, tagsFollowed), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
