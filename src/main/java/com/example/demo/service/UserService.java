@@ -49,6 +49,7 @@ public class UserService{
         return user;
     }
 
+
     public User create(UserCreationDTO userDto) {
         if (usernameAlreadyExists(userDto.getUsername())) {
             throw new IllegalStateException("El nombre de usuario ya esta en uso");
@@ -96,5 +97,10 @@ public class UserService{
         tag.getFollowers().remove(user);
         tagRepository.save(tag);
         return tag;
+    }
+    public User findUserById(String userId) {
+        return userRepository.findById(Long.parseLong(userId)).orElseThrow(() -> new IllegalStateException(
+                "user with id " + userId + " does not exists"
+        ));
     }
 }
