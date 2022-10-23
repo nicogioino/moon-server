@@ -1,4 +1,5 @@
 package com.example.demo.dto.post;
+import com.example.demo.dto.react.ReactsListingDTO;
 import com.example.demo.dto.tag.TagListingDTO;
 import com.example.demo.dto.user.UserListingDTO;
 import com.example.demo.model.Post;
@@ -14,6 +15,8 @@ public class PostListingDTO {
     Long id;
     TagListingDTO[] tags;
     UserListingDTO user;
+
+    ReactsListingDTO reacts;
 
     public static PostListingDTO fromPost(Post post) {
         PostListingDTO postListingDTO = new PostListingDTO();
@@ -35,6 +38,21 @@ public class PostListingDTO {
             postListingDTO.setTitle(post.getTitle());
             postListingDTO.setTags(generateTags(post.getTags()));
             postListingDTO.setUser(UserListingDTO.fromUser(post.getUser()));
+            arrayedPosts.add(postListingDTO);
+        }
+        PostListingDTO[] returned = new PostListingDTO[arrayedPosts.size()];
+        return arrayedPosts.toArray(returned);
+    }
+    public static PostListingDTO[] fromPosts(Post[] posts, ReactsListingDTO[] reacts) {
+        ArrayList<PostListingDTO> arrayedPosts = new ArrayList<>();
+        for (int i = 0; i < posts.length ; i++) {
+            PostListingDTO postListingDTO = new PostListingDTO();
+            postListingDTO.setText(posts[i].getText());
+            postListingDTO.setId(posts[i].getId());
+            postListingDTO.setTitle(posts[i].getTitle());
+            postListingDTO.setTags(generateTags(posts[i].getTags()));
+            postListingDTO.setUser(UserListingDTO.fromUser(posts[i].getUser()));
+            postListingDTO.setReacts(reacts[i]);
             arrayedPosts.add(postListingDTO);
         }
         PostListingDTO[] returned = new PostListingDTO[arrayedPosts.size()];
@@ -87,4 +105,8 @@ public class PostListingDTO {
     public void setUser(UserListingDTO user) {
         this.user = user;
     }
+
+    public ReactsListingDTO getReacts() {return reacts;}
+
+    public void setReacts(ReactsListingDTO reacts) {this.reacts = reacts;}
 }
