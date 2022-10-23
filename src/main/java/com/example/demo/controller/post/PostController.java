@@ -81,6 +81,15 @@ public class PostController {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
+    @GetMapping("/post-info/{postId}")
+    public ResponseEntity<?> getPost(@PathVariable Long postId, @RequestHeader String Authorization){
+        try{
+            Post post = postService.getPostById(postId);
+            return new ResponseEntity<>(PostListingDTO.fromPost(post), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<?> getPostsFrom(@PathVariable("userId") Long userId, @RequestHeader String Authorization ){

@@ -111,5 +111,6 @@ public class PostService {
 
         if(post.isDeleted()) throw new IllegalStateException("Post is deleted");
         return post;
+
     }
 }
