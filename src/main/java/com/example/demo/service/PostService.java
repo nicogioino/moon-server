@@ -104,9 +104,11 @@ public class PostService {
     }
 
     public Post getPostById(Long postId) {
-        return postRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalStateException(
                         "Post with id " + postId + " does not exist"
                 ));
+        if(post.isDeleted()) throw new IllegalStateException("Post is deleted");
+        return post;
     }
 }
