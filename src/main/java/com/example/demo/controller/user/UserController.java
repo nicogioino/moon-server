@@ -167,8 +167,8 @@ public class UserController {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
             return new ResponseEntity<>(followService.getFollowedUsers(user), HttpStatus.OK);
-        } catch (Error e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
     @GetMapping(path = "/followers")
@@ -177,8 +177,8 @@ public class UserController {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
             return new ResponseEntity<>(followService.getFollowers(user), HttpStatus.OK);
-        } catch (Error e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
     @GetMapping(path = "/tags")
@@ -188,8 +188,8 @@ public class UserController {
             User user = userService.findUserByEmail(email);
             List<TagListingDTO> tags = tagService.getTagsFollowedByUserDTO(user);
             return new ResponseEntity<>(tags, HttpStatus.OK);
-        } catch (Error e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
     @GetMapping(path = "/tags/created")
@@ -198,8 +198,8 @@ public class UserController {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
             return new ResponseEntity<>(tagService.getUserTags(user), HttpStatus.OK);
-        } catch (Error e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
     @PostMapping(path = "/follow/tag/{tagId}")
@@ -209,8 +209,8 @@ public class UserController {
             User user = userService.findUserByEmail(email);
             Tag tag = tagService.getTagById(tagId);
             return new ResponseEntity<>(TagListingDTO.fromTag(userService.followTag(user, tag)), HttpStatus.OK);
-        } catch (Error e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
     @PostMapping(path = "/unfollow/tag/{tagId}")
@@ -220,8 +220,8 @@ public class UserController {
             User user = userService.findUserByEmail(email);
             Tag tag = tagService.getTagById(tagId);
             return new ResponseEntity<>(userService.unfollowTag(user, tag), HttpStatus.OK);
-        } catch (Error e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
     @PostMapping(path = "/react/{postId}")
@@ -234,8 +234,8 @@ public class UserController {
                 return new ResponseEntity<>(ErrorDTO.fromMessage("Post does not exist"), HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(reactService.react(user, post, reactType), HttpStatus.OK);
-        } catch (Error e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
     @DeleteMapping(path = "/react/{postId}")
@@ -252,24 +252,24 @@ public class UserController {
                 return new ResponseEntity<>(ErrorDTO.fromMessage("No reaction to this post"), HttpStatus.BAD_REQUEST);
             }
 
-        } catch (Error e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
     @GetMapping(path = "/reacts/{postId}")
     public ResponseEntity<?> getReactsCount(@PathVariable Long postId) {
         try {
             return new ResponseEntity<>(reactService.countReactsByPostId(postId), HttpStatus.OK);
-        } catch (Error e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
     @GetMapping(path = "/reacts/type/{postId}")
     public ResponseEntity<?> getReactsCountByType(@PathVariable Long postId, @RequestBody ReactType reactType) {
         try {
             return new ResponseEntity<>(reactService.countReactsByType(postId,reactType), HttpStatus.OK);
-        } catch (Error e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
     @GetMapping(path = "/reacts/user/{postId}")
@@ -279,8 +279,8 @@ public class UserController {
             User user = userService.findUserByEmail(email);
             List<React> userReacts = reactService.getReactsByUserAndPost(user, postId);
             return new ResponseEntity<>(userReacts, HttpStatus.OK);
-        } catch (Error e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 }
