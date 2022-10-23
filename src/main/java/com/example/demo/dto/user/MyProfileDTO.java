@@ -1,32 +1,34 @@
 package com.example.demo.dto.user;
 
-import com.example.demo.dto.post.PostDTO;
 import com.example.demo.dto.post.PostListingDTO;
+import com.example.demo.dto.tag.TagListingDTO;
 import com.example.demo.model.Post;
+import com.example.demo.model.Tag;
 import com.example.demo.model.User;
 
 import java.util.List;
 
-public class UserProfileDTO {
+public class MyProfileDTO {
+
     private Long id;
     private String username;
     private String bio;
     private PostListingDTO[] posts;
     private Integer following;
     private Integer followers;
-    private Integer followedTags;
+    private List<TagListingDTO> followedTags;
 
-    public static UserProfileDTO fromUser(User user, Post[] posts, Integer followers, Integer following, Integer tagsFollowed) {
-        UserProfileDTO userProfileDTO = new UserProfileDTO();
-        userProfileDTO.setId(user.getId());
-        userProfileDTO.setUsername(user.getUsername());
-        userProfileDTO.setBio(user.getBio());
-        userProfileDTO.setPosts(PostListingDTO.fromPosts(posts));
-        userProfileDTO.setFollowers(followers);
-        userProfileDTO.setFollowing(following);
-
-        userProfileDTO.setFollowedTags(tagsFollowed);
-        return userProfileDTO;
+    public static MyProfileDTO fromUser(User user, Post[] posts, Integer followers, Integer following, List<Tag> tagsFollowed) {
+        MyProfileDTO myProfileDTO = new MyProfileDTO();
+        myProfileDTO.setId(user.getId());
+        myProfileDTO.setUsername(user.getUsername());
+        myProfileDTO.setBio(user.getBio());
+        myProfileDTO.setPosts(PostListingDTO.fromPosts(posts));
+        myProfileDTO.setFollowers(followers);
+        myProfileDTO.setFollowing(following);
+        List<TagListingDTO> tagsDTOs = TagListingDTO.fromTags(tagsFollowed);
+        myProfileDTO.setFollowedTags(tagsDTOs);
+        return myProfileDTO;
     }
 
     public Long getId() {
@@ -77,11 +79,11 @@ public class UserProfileDTO {
         this.followers = followers;
     }
 
-    public Integer getFollowedTags() {
+    public List<TagListingDTO> getFollowedTags() {
         return followedTags;
     }
 
-    public void setFollowedTags(Integer followedTags) {
+    public void setFollowedTags(List<TagListingDTO> followedTags) {
         this.followedTags = followedTags;
     }
 }
