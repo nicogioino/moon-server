@@ -110,6 +110,7 @@ public class PostService {
                 .orElseThrow(() -> new IllegalStateException(
                         "Post with id " + postId + " does not exist"
                 ));
+        if(post.isDeleted()) throw new IllegalStateException("Post is deleted");
         return post;
     }
 }

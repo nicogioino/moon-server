@@ -80,13 +80,11 @@ public class PostController {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping("/{postId}")
-    public ResponseEntity<?> getPost(@PathVariable("postId") Long postId, @RequestHeader String Authorization){
+    @GetMapping("/post-info/{postId}")
+    public ResponseEntity<?> getPost(@PathVariable Long postId, @RequestHeader String Authorization){
         try{
-            String email = jwtUtil.extractEmail(Authorization);
-            User user = userService.findUserByEmail(email);
             Post post = postService.getPostById(postId);
-            return new ResponseEntity<>(PostListingDTO.fromPost(post), HttpStatus.CREATED);
+            return new ResponseEntity<>(PostListingDTO.fromPost(post), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
