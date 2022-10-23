@@ -19,6 +19,7 @@ public class PostListingDTO {
         PostListingDTO postListingDTO = new PostListingDTO();
         postListingDTO.setText(post.getText());
         postListingDTO.setTitle(post.getTitle());
+        postListingDTO.setId(post.getId());
         postListingDTO.setTags(generateTags(post.getTags()));
         postListingDTO.setUser(UserListingDTO.fromUser(post.getUser()));
         return postListingDTO;

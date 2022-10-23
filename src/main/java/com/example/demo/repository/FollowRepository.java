@@ -1,9 +1,11 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.Follow;
+import com.example.demo.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
@@ -14,4 +16,9 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     @Query("SELECT f.follower.id FROM Follow f WHERE  f.followed.id = :id and f.deleted = false")
     Long[] findFollowers(Long id);
+    @Query("SELECT f.followed FROM Follow f WHERE  f.follower.id = :id and f.deleted = false")
+    Optional<List<User>> findFollowedUsersByFollowerId(Long id);
+
+    @Query("SELECT f.follower FROM Follow f WHERE  f.followed.id = :id and f.deleted = false")
+    Optional<List<User>> findFollowersByFollowedId(Long id);
 }

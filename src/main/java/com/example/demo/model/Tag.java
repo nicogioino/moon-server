@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -26,6 +27,18 @@ public class Tag extends BaseEntity{
     @ManyToOne
     @JoinColumn(name="user_id", nullable=false)
     private User user;
+
+    @ManyToMany
+    @JoinTable(
+            name = "users_following_tags",
+            joinColumns = {
+                    @JoinColumn(name = "tag_id", nullable = false)
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "user_id", nullable = false)
+            }
+    )
+    private Set<User> followers = new HashSet<>();
 
     public Tag(Long id, String name) {
         this.id = id;
@@ -75,4 +88,5 @@ public class Tag extends BaseEntity{
         return name;
     }
 
+    public Set<User> getFollowers() {return followers;}
 }

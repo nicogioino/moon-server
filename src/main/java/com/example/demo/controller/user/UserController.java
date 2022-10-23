@@ -9,9 +9,11 @@ import com.example.demo.dto.user.UserProfileDTO;
 import com.example.demo.dto.user.UserUpdateDTO;
 import com.example.demo.model.Follow;
 import com.example.demo.model.Post;
+import com.example.demo.model.Tag;
 import com.example.demo.model.User;
 import com.example.demo.security.util.JwtUtil;
 import com.example.demo.service.FollowService;
+import com.example.demo.service.TagService;
 import com.example.demo.service.PostService;
 import com.example.demo.service.UserService;
 import com.example.demo.validators.UserInputValidator;
@@ -30,6 +32,7 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
     private final UserService userService;
+    private final TagService tagService;
     private final UserInputValidator userInputValidator = new UserInputValidator();
 
     private final FollowInputValidator followInputValidator = new FollowInputValidator();
@@ -38,8 +41,9 @@ public class UserController {
     private final PostService postService;
 
     @Autowired
-    public UserController(UserService userService, FollowService followService, PostService postService) {
+    public UserController(UserService userService, TagService tagService, FollowService followService, PostService postService) {
         this.userService = userService;
+        this.tagService = tagService;
         this.followService = followService;
         this.postService = postService;
     }
@@ -135,5 +139,67 @@ public class UserController {
 
         return followService.findFollowersId(user);
     }
-    
+
+    @GetMapping(path = "/followed")
+    public ResponseEntity<?> getFollowedUsers(@RequestHeader String Authorization) {
+        try {
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            return new ResponseEntity<>(followService.getFollowedUsers(user), HttpStatus.OK);
+        } catch (Error e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping(path = "/followers")
+    public ResponseEntity<?> getFollowers(@RequestHeader String Authorization) {
+        try {
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            return new ResponseEntity<>(followService.getFollowers(user), HttpStatus.OK);
+        } catch (Error e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping(path = "/tags")
+    public ResponseEntity<?> getFollowedTags(@RequestHeader String Authorization) {
+        try {
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            return new ResponseEntity<>(tagService.getTagsFollowedByUser(user), HttpStatus.OK);
+        } catch (Error e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping(path = "/tags/created")
+    public ResponseEntity<?> getCreatedTags(@RequestHeader String Authorization) {
+        try {
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            return new ResponseEntity<>(tagService.getUserTags(user), HttpStatus.OK);
+        } catch (Error e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping(path = "/follow/tag/{tagId}")
+    public ResponseEntity<?> followTag(@RequestHeader String Authorization, @PathVariable Long tagId) {
+        try {
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            Tag tag = tagService.getTagById(tagId);
+            return new ResponseEntity<>(userService.followTag(user, tag), HttpStatus.OK);
+        } catch (Error e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping(path = "/unfollow/tag/{tagId}")
+    public ResponseEntity<?> unfollowTag(@RequestHeader String Authorization, @PathVariable Long tagId) {
+        try {
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            Tag tag = tagService.getTagById(tagId);
+            return new ResponseEntity<>(userService.unfollowTag(user, tag), HttpStatus.OK);
+        } catch (Error e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }
