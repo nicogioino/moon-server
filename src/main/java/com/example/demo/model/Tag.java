@@ -21,9 +21,6 @@ public class Tag extends BaseEntity{
     @Size(min=1, max =20)
     private String name;
 
-    @ManyToMany(mappedBy = "tags", cascade = { CascadeType.ALL })
-    private Set<Post> posts = new HashSet<>();
-
     @ManyToOne
     @JoinColumn(name="user_id", nullable=false)
     private User user;
@@ -55,22 +52,12 @@ public class Tag extends BaseEntity{
     public Tag() {
     }
 
-    public Tag(Long id, String name, Set<Post> posts) {
-        this.id = id;
-        this.name = name;
-        this.posts = posts;
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setPosts(Set<Post> posts) {
-        this.posts = posts;
     }
 
     @Override

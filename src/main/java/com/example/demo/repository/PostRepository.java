@@ -11,4 +11,6 @@ public interface PostRepository  extends JpaRepository<Post, Long> {
 
     @Query("SELECT p FROM Post p where p.user.id = :userId and p.deleted = false")
     Post[] postsFrom(Long userId, Sort sort);
+
+
 }
