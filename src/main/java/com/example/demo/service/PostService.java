@@ -81,11 +81,10 @@ public class PostService {
                 ));
         if(post.isDeleted()) throw new IllegalStateException("Post is deleted");
 
-        Set<User> bookmarkedPosts = post.getBookmarkedByUsers();
-        if(!bookmarkedPosts.contains(user)) {
-            bookmarkedPosts.add(user);
+        Set<Post> bookmarkedPosts = user.getBookmarkedPosts();
+        if(!bookmarkedPosts.contains(post)) {
+            bookmarkedPosts.add(post);
             userService.save(user);
-            postRepository.save(post);
         } else throw new IllegalArgumentException("Post already bookmarked");
     }
 
@@ -95,9 +94,9 @@ public class PostService {
                         "Post with id " + postId + " does not exist"
                 ));
         if(post.isDeleted()) throw new IllegalStateException("Post is deleted");
-        Set<User> bookmarkedPosts = post.getBookmarkedByUsers();
-        if(!bookmarkedPosts.contains(user)) {
-            bookmarkedPosts.remove(user);
+        Set<Post> bookmarkedPosts = user.getBookmarkedPosts();
+        if(bookmarkedPosts.contains(post)) {
+            bookmarkedPosts.remove(post);
             userService.save(user);
             postRepository.save(post);
         } else throw new IllegalArgumentException("Post not bookmarked");
