@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.tag.TagListingDTO;
+import com.example.demo.dto.tag.TagNameDTO;
 import com.example.demo.model.Tag;
 import com.example.demo.model.User;
 import com.example.demo.repository.TagRepository;
@@ -70,14 +71,23 @@ public class TagService {
         }
         return followedTags;}
 
-    public List<TagListingDTO> getTagsFollowedByUserDTO(User user) {
+    public List<TagNameDTO> getTagsFollowedByUserDTO(User user) {//For Reacts. Returns only tag name
         List<Tag> followedTags = getTagsFollowedByUser(user);
-        List<TagListingDTO> followedTagsDTO = new ArrayList<>();
+        List<TagNameDTO> followedTagsDTO = new ArrayList<>();
         for(Tag tag : followedTags) {
-            followedTagsDTO.add(TagListingDTO.fromTag(tag.getName()));
+            followedTagsDTO.add(TagNameDTO.fromTag(tag.getName()));
         }
         return followedTagsDTO;
     }
+    public List<TagListingDTO> getFullTagsFollowedByUserDTO(User user) {//When the whole Tag object is needed
+        List<Tag> followedTags = getTagsFollowedByUser(user);
+        List<TagListingDTO> followedTagsDTO = new ArrayList<>();
+        for(Tag tag : followedTags) {
+            followedTagsDTO.add(TagListingDTO.fromTag(tag));
+        }
+        return followedTagsDTO;
+    }
+
 
 
 }

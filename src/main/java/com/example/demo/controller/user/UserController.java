@@ -5,6 +5,7 @@ import com.example.demo.dto.follow.FollowDTO;
 import com.example.demo.dto.follow.FollowListingDTO;
 import com.example.demo.dto.react.ReactsListingDTO;
 import com.example.demo.dto.tag.TagListingDTO;
+import com.example.demo.dto.tag.TagNameDTO;
 import com.example.demo.dto.user.UserCreationDTO;
 import com.example.demo.dto.user.UserListingDTO;
 import com.example.demo.dto.user.UserUpdateDTO;
@@ -186,7 +187,7 @@ public class UserController {
         try {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
-            List<TagListingDTO> tags = tagService.getTagsFollowedByUserDTO(user);
+            List<TagNameDTO> tags = tagService.getTagsFollowedByUserDTO(user);
             return new ResponseEntity<>(tags, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
