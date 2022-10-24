@@ -87,6 +87,15 @@ public class TagService {
         }
         return followedTagsDTO;
     }
+    public List<TagListingDTO> getFullTagsCreatedByUserDTO(User user) {//When the whole Tag object is needed
+        List<Tag> userTags = getUserTags(user);
+        List<TagListingDTO> createdTagsDTO = new ArrayList<>();
+        for(Tag tag : userTags) {
+            createdTagsDTO.add(TagListingDTO.fromTag(tag));
+        }
+        return createdTagsDTO;
+    }
+
 
 
 
