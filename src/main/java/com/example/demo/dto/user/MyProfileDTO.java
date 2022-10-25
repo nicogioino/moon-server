@@ -14,6 +14,7 @@ public class MyProfileDTO {
     private Long id;
     private String username;
     private String bio;
+    private String email;
     private PostListingDTO[] posts;
     private Integer following;
     private Integer followers;
@@ -23,6 +24,7 @@ public class MyProfileDTO {
         MyProfileDTO myProfileDTO = new MyProfileDTO();
         myProfileDTO.setId(user.getId());
         myProfileDTO.setUsername(user.getUsername());
+        myProfileDTO.setEmail(user.getEmail());
         myProfileDTO.setBio(user.getBio());
         myProfileDTO.setPosts(PostListingDTO.fromPosts(posts, reacts));
         myProfileDTO.setFollowers(followers);
@@ -86,5 +88,13 @@ public class MyProfileDTO {
 
     public void setFollowedTags(List<TagListingDTO> followedTags) {
         this.followedTags = followedTags;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
