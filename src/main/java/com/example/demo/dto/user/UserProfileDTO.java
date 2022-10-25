@@ -11,6 +11,7 @@ import java.util.List;
 public class UserProfileDTO {
     private Long id;
     private String username;
+    private String email;
     private String bio;
     private PostListingDTO[] posts;
     private Integer following;
@@ -22,6 +23,7 @@ public class UserProfileDTO {
         userProfileDTO.setId(user.getId());
         userProfileDTO.setUsername(user.getUsername());
         userProfileDTO.setBio(user.getBio());
+        userProfileDTO.setEmail(user.getEmail());
         userProfileDTO.setPosts(PostListingDTO.fromPosts(posts, reacts));
         userProfileDTO.setFollowers(followers);
         userProfileDTO.setFollowing(following);
@@ -84,5 +86,13 @@ public class UserProfileDTO {
 
     public void setFollowedTags(Integer followedTags) {
         this.followedTags = followedTags;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
