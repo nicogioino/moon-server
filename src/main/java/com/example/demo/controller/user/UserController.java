@@ -9,7 +9,6 @@ import com.example.demo.dto.user.UserCreationDTO;
 import com.example.demo.dto.user.UserListingDTO;
 import com.example.demo.dto.user.UserUpdateDTO;
 import com.example.demo.model.*;
-import com.example.demo.dto.tag.TagListingDTO;
 import com.example.demo.dto.user.*;
 import com.example.demo.model.Follow;
 import com.example.demo.model.Post;
@@ -23,15 +22,12 @@ import com.example.demo.service.UserService;
 import com.example.demo.service.*;
 import com.example.demo.validators.UserInputValidator;
 import com.example.demo.validators.FollowInputValidator;
-import org.apache.tomcat.util.http.parser.Authorization;
+import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
-
 import java.util.List;
 
 
@@ -84,6 +80,7 @@ public class UserController {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
+
     @GetMapping
     public ResponseEntity<?> getUserProfile(@RequestHeader String Authorization) {
         try {
