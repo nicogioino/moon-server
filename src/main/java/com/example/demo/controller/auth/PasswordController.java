@@ -4,14 +4,11 @@ import com.example.demo.dto.error.ErrorDTO;
 import com.example.demo.dto.user.PasswordDTO;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
-import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +20,6 @@ import java.util.UUID;
 @RequestMapping(path = "/forgot")
 public class PasswordController {
     private final UserService userService;
-
-    //private Environment env;
     @Autowired
     private JavaMailSender mailSender;
 
@@ -69,7 +64,7 @@ public class PasswordController {
         }
         return new ResponseEntity<>(ErrorDTO.fromMessage("No se pudo guardar la contraseña"), HttpStatus.BAD_REQUEST);
     }
-    @GetMapping("/changePassword")
+    @GetMapping("/changePassword") // This method could be just a redirect to the page
     public ResponseEntity<?> showChangePasswordPage(Model model, @RequestParam("token") String token) {
         String result = userService.validatePasswordResetToken(token);
         if(result.equals("invalidToken")) {
@@ -82,21 +77,6 @@ public class PasswordController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
-
-    // Change user password
-    @PostMapping("/updatePassword")
-    public ResponseEntity<?> changeUserPassword(@RequestBody PasswordDTO passwordDto) throws Exception {
-        try {
-            final User user = userService.findUserByEmail(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail());
-            userService.changeUserPassword(user, passwordDto.getNewPassword());
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        catch (Exception e) {
-            return new ResponseEntity<>(ErrorDTO.fromMessage("No se pudo cambiar la contraseña"), HttpStatus.BAD_REQUEST);
-        }
-
-    }
-
 
     private SimpleMailMessage constructResetTokenEmail(final String token, final User user) {
         String messageBody = "You have requested to reset your password. Please click the link below to complete the process.";
