@@ -38,7 +38,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                .authorizeRequests().antMatchers("/login", "/forgot*","/forgot/**","/user/resetPassword*","/user/savePassword*","/updatePassword*",
+                .authorizeRequests().antMatchers("/login", "/forgot*","/forgot/**","/user/resetPassword*","/user/savePassword*","/changePassword*",
                         "/user/changePassword*").permitAll()
 
                 .antMatchers( "/user").permitAll()

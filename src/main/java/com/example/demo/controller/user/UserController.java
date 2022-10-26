@@ -22,11 +22,9 @@ import com.example.demo.service.UserService;
 import com.example.demo.service.*;
 import com.example.demo.validators.UserInputValidator;
 import com.example.demo.validators.FollowInputValidator;
-import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 
 
@@ -79,12 +80,18 @@ public class UserService{
         return userRepository.existsByEmail(email);
     }
 
-    public void createPasswordResetTokenForUser(final User user, final String token) {
-        final PasswordResetToken myToken = new PasswordResetToken(token, user);
+    public String createPasswordResetTokenForUser(final User user) {
+        final PasswordResetToken myToken = new PasswordResetToken(getRandomNumberToken(), user);
         passwordResetTokenRepository.save(myToken);
+        return myToken.getToken();
     }
     public PasswordResetToken getPasswordResetToken(final String token) {
         return passwordResetTokenRepository.findByToken(token);
+    }
+    private String getRandomNumberToken(){
+        Random rnd = new Random();
+        int number = rnd.nextInt(999999);
+        return  String.format("%06d", number);
     }
     public Optional<User> getUserByPasswordResetToken(final String token) {
         return Optional.ofNullable(passwordResetTokenRepository.findByToken(token) .getUser());

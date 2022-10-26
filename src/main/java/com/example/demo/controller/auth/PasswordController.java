@@ -32,8 +32,8 @@ public class PasswordController {
     public ResponseEntity<?> resetPassword(@RequestParam("email") String email) {
         try {
             User user = userService.findUserByEmail(email);
-            String token = UUID.randomUUID().toString();
-            userService.createPasswordResetTokenForUser(user, token);
+
+            String token = userService.createPasswordResetTokenForUser(user);
             mailSender.send(constructResetTokenEmail(token, user));
             String message = "Se ha enviado un email a " + email + " para restablecer la contraseña";
             return new ResponseEntity<>(message,HttpStatus.OK);
@@ -44,7 +44,7 @@ public class PasswordController {
     }
     // Save password
     @PostMapping("/user/savePassword")
-    public ResponseEntity<?> savePassword(@RequestBody PasswordDTO passwordDto) {
+    public ResponseEntity<?> savePassword(@RequestBody PasswordDTO passwordDto) {//Password DTO contains the token and the new Password
         try {
             final String result = userService.validatePasswordResetToken(passwordDto.getToken());
 
@@ -64,8 +64,8 @@ public class PasswordController {
         }
         return new ResponseEntity<>(ErrorDTO.fromMessage("No se pudo guardar la contraseña"), HttpStatus.BAD_REQUEST);
     }
-    @GetMapping("/changePassword") // This method could be just a redirect to the page
-    public ResponseEntity<?> showChangePasswordPage(Model model, @RequestParam("token") String token) {
+    /*@GetMapping("/changePassword") // This method could be just a redirect to the page
+    public ResponseEntity<?> showChangePasswordPage(@RequestParam("token") String token) {
         String result = userService.validatePasswordResetToken(token);
         if(result.equals("invalidToken")) {
             return new ResponseEntity<>(ErrorDTO.fromMessage("Invalid token"), HttpStatus.BAD_REQUEST);
@@ -73,15 +73,14 @@ public class PasswordController {
         if (result.equals("expired")) {
             return new ResponseEntity<>(ErrorDTO.fromMessage("Expired token"), HttpStatus.BAD_REQUEST);
         }else {
-            model.addAttribute("token", token);
             return new ResponseEntity<>(HttpStatus.OK);
         }
-    }
+    }*/
 
     private SimpleMailMessage constructResetTokenEmail(final String token, final User user) {
-        String messageBody = "You have requested to reset your password. Please click the link below to complete the process.";
-        String url = "http://localhost:8080/forgot/resetPassword?token=" + token;
-        return constructEmail(messageBody + " \r\n" + url, user);
+        String messageBody = "You have requested to reset your password. Please use the code below to complete the process.";
+        //String url = "http://localhost:8080/forgot/resetPassword?token=" + token;
+        return constructEmail(messageBody + " \r\n" + token, user);
     }
 
     private SimpleMailMessage constructEmail(String body, User user) {
