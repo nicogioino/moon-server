@@ -35,7 +35,7 @@ public class UserInputValidator {
         return true;
     }
 
-    private boolean checkPassword(String password) throws Exception {
+    public boolean checkPassword(String password) throws Exception {
         if(password != null){
             if( !utils.checkString(password,8, 20))
                 throw new Exception("La contraseña debe tener entre 8 y 20 caracteres");

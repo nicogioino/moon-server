@@ -2,19 +2,24 @@ package com.example.demo.service;
 
 import com.example.demo.dto.user.UserCreationDTO;
 import com.example.demo.dto.user.UserUpdateDTO;
+import com.example.demo.model.PasswordResetToken;
 import com.example.demo.model.Post;
 import com.example.demo.model.Tag;
 import com.example.demo.model.User;
+import com.example.demo.repository.PasswordResetTokenRepository;
 import com.example.demo.repository.TagRepository;
 import com.example.demo.repository.UserRepository;
 
+import com.example.demo.validators.UserInputValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Calendar;
+import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 
 
@@ -22,13 +27,15 @@ import java.util.Set;
 public class UserService{
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, TagRepository tagRepository) {
+    public UserService(UserRepository userRepository, TagRepository tagRepository, PasswordResetTokenRepository passwordResetTokenRepository) {
         this.userRepository = userRepository;
         this.tagRepository = tagRepository;
+        this.passwordResetTokenRepository = passwordResetTokenRepository;
     }
 
     @Modifying
@@ -73,6 +80,54 @@ public class UserService{
         return userRepository.existsByEmail(email);
     }
 
+    public String createPasswordResetTokenForUser(final User user) {
+        final PasswordResetToken myToken = new PasswordResetToken(getRandomNumberToken(), user);
+        passwordResetTokenRepository.save(myToken);
+        return myToken.getToken();
+    }
+    public PasswordResetToken getPasswordResetToken(final String token) {
+        return passwordResetTokenRepository.findByToken(token);
+    }
+    private String getRandomNumberToken(){
+        Random rnd = new Random();
+        int number = rnd.nextInt(999999);
+        return  String.format("%06d", number);
+    }
+    public Optional<User> getUserByPasswordResetToken(final String token) {
+        return Optional.ofNullable(passwordResetTokenRepository.findByToken(token) .getUser());
+    }
+    public void changeUserPassword(final User user, final String password) throws Exception {
+        UserInputValidator validator = new UserInputValidator();
+        boolean valid = validator.checkPassword(password);
+        if (valid) {
+            user.setPassword(passwordEncoder.encode(password));
+            userRepository.save(user);
+        } else {
+            throw new Exception("La contraseña no cumple con los requisitos");
+        }
+    }
+
+    public boolean checkIfValidOldPassword(final User user, final String oldPassword) {
+        return passwordEncoder.matches(oldPassword, user.getPassword());
+    }
+    public String validatePasswordResetToken(String token) {
+        final PasswordResetToken passToken = passwordResetTokenRepository.findByToken(token);
+
+        return !isTokenFound(passToken) ? "invalidToken"
+                : isTokenExpired(passToken) ? "expired"
+                : passToken.getUsed() ? "used"
+                : "valid";
+    }
+
+    private boolean isTokenFound(PasswordResetToken passToken) {
+        return passToken != null;
+    }
+
+    private boolean isTokenExpired(PasswordResetToken passToken) {
+        final Calendar cal = Calendar.getInstance();
+        return passToken.getExpiryDate().before(cal.getTime());
+    }
+
     public User findUserByEmail(String email) {
         return userRepository.getUserByEmail(email).orElseThrow(() -> new Error(
                 "user with email " + email + " does not exists"
@@ -102,5 +157,11 @@ public class UserService{
         return userRepository.findById(Long.parseLong(userId)).orElseThrow(() -> new IllegalStateException(
                 "user with id " + userId + " does not exists"
         ));
+    }
+
+    public void saveUsedPasswordResetToken(PasswordResetToken passwordResetToken) {
+        passwordResetToken.setUsed(true);
+        passwordResetTokenRepository.save(passwordResetToken);
+
     }
 }
