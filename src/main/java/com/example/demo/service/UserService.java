@@ -115,6 +115,7 @@ public class UserService{
 
         return !isTokenFound(passToken) ? "invalidToken"
                 : isTokenExpired(passToken) ? "expired"
+                : passToken.getUsed() ? "used"
                 : "valid";
     }
 
@@ -156,5 +157,11 @@ public class UserService{
         return userRepository.findById(Long.parseLong(userId)).orElseThrow(() -> new IllegalStateException(
                 "user with id " + userId + " does not exists"
         ));
+    }
+
+    public void saveUsedPasswordResetToken(PasswordResetToken passwordResetToken) {
+        passwordResetToken.setUsed(true);
+        passwordResetTokenRepository.save(passwordResetToken);
+
     }
 }

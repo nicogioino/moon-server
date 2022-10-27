@@ -2,6 +2,7 @@ package com.example.demo.controller.auth;
 
 import com.example.demo.dto.error.ErrorDTO;
 import com.example.demo.dto.user.PasswordDTO;
+import com.example.demo.model.PasswordResetToken;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,12 +52,14 @@ public class PasswordController {
             if (result.equals("invalidToken")) {
                 return new ResponseEntity<>(ErrorDTO.fromMessage("Invalid token"), HttpStatus.BAD_REQUEST);
             }
-            if (result.equals("expired")) {
+            if (result.equals("expired") || result.equals("used")) {
                 return new ResponseEntity<>(ErrorDTO.fromMessage("Expired token"), HttpStatus.BAD_REQUEST);
             }
             Optional<User> user = userService.getUserByPasswordResetToken(passwordDto.getToken());
             if (user.isPresent()) {
                 userService.changeUserPassword(user.get(), passwordDto.getNewPassword());
+                PasswordResetToken passwordResetToken = userService.getPasswordResetToken(passwordDto.getToken());
+                userService.saveUsedPasswordResetToken(passwordResetToken);
                 return new ResponseEntity<>(("Contraseña guardada existosamente"), HttpStatus.OK);
             }
         } catch (Exception e) {
@@ -64,18 +67,6 @@ public class PasswordController {
         }
         return new ResponseEntity<>(ErrorDTO.fromMessage("No se pudo guardar la contraseña"), HttpStatus.BAD_REQUEST);
     }
-    /*@GetMapping("/changePassword") // This method could be just a redirect to the page
-    public ResponseEntity<?> showChangePasswordPage(@RequestParam("token") String token) {
-        String result = userService.validatePasswordResetToken(token);
-        if(result.equals("invalidToken")) {
-            return new ResponseEntity<>(ErrorDTO.fromMessage("Invalid token"), HttpStatus.BAD_REQUEST);
-        }
-        if (result.equals("expired")) {
-            return new ResponseEntity<>(ErrorDTO.fromMessage("Expired token"), HttpStatus.BAD_REQUEST);
-        }else {
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-    }*/
 
     private SimpleMailMessage constructResetTokenEmail(final String token, final User user) {
         String messageBody = "You have requested to reset your password. Please use the code below to complete the process.";

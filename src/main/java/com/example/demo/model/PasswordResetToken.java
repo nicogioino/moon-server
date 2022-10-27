@@ -16,6 +16,8 @@ public class PasswordResetToken extends BaseEntity{
 
         private String token;
 
+        private boolean used;
+
         @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
         @JoinColumn(nullable = false, name = "user_id")
         private User user;
@@ -70,7 +72,13 @@ public class PasswordResetToken extends BaseEntity{
             this.expiryDate = expiryDate;
         }
 
-        private Date calculateExpiryDate(final int expiryTimeInMinutes) {
+        public boolean isUsed() {return used;}
+
+        public void setUsed(boolean used) {this.used = used;}
+
+        public boolean getUsed() {return used;}
+
+    private Date calculateExpiryDate(final int expiryTimeInMinutes) {
             final Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(new Date().getTime());
             cal.add(Calendar.MINUTE, expiryTimeInMinutes);
