@@ -1,5 +1,6 @@
 package com.example.demo.controller.user;
 
+import com.example.demo.dto.VoteDTO;
 import com.example.demo.dto.error.ErrorDTO;
 import com.example.demo.dto.follow.FollowDTO;
 import com.example.demo.dto.follow.FollowListingDTO;
@@ -277,6 +278,46 @@ public class UserController {
             User user = userService.findUserByEmail(email);
             List<React> userReacts = reactService.getReactsByUserAndPost(user, postId);
             return new ResponseEntity<>(userReacts, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping(path = "/comment/upvote/{commentId}")
+    public ResponseEntity<?> comment(@RequestHeader String Authorization, @PathVariable Long commentId, @RequestBody VoteDTO voteDTO) {
+        try {
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+
+            commentService.upvote(user, comment);
+            return new ResponseEntity<>(comment, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping(path = "/comment/downvote/{commentId}")
+    public ResponseEntity<?> comment(@RequestHeader String Authorization, @PathVariable Long commentId, @RequestBody VoteDTO voteDTO) {
+        try {
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+
+            commentService.downvote(user, comment);
+            return new ResponseEntity<>(comment, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping(path = "/comment/votes/{commentId}")
+    public ResponseEntity<?> getVotesCount(@PathVariable Long commentId) { //devuelve un voteDTO con los counts
+        try {
+            return new ResponseEntity<>(commentService.countVotesByCommentId(commentId), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping(path = "/comment/votes/type/{commentId}")
+    public ResponseEntity<?> getVotesCountByType(@PathVariable Long commentId, @RequestBody VoteType voteType) {
+        try {
+            return new ResponseEntity<>(commentService.countVotesByType(commentId,voteType), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
