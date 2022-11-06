@@ -182,7 +182,7 @@ public class UserController {
         try {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
-            List<TagNameDTO> tags = tagService.getTagsFollowedByUserDTO(user);
+            List<TagListingDTO> tags = tagService.getFullTagsFollowedByUserDTO(user);
             return new ResponseEntity<>(tags, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
@@ -216,6 +216,7 @@ public class UserController {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
             Tag tag = tagService.getTagById(tagId);
+            userService.unfollowTag(user, tag);
             TagListingDTO tagListingDTO = TagListingDTO.fromTag(tag);
             return new ResponseEntity<>(tagListingDTO, HttpStatus.OK);
         } catch (Exception e) {

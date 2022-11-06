@@ -15,6 +15,12 @@ public class TagListingDTO {
         tagListingDTO.setName(name);
         return tagListingDTO;
     }
+    public static TagListingDTO fromTag(Long id,String name) {
+        TagListingDTO tagListingDTO = new TagListingDTO();
+        tagListingDTO.setName(name);
+        tagListingDTO.setId(id);
+        return tagListingDTO;
+    }
 
     public static TagListingDTO fromTag(Tag tag) {
         TagListingDTO tagListingDTO = new TagListingDTO();
