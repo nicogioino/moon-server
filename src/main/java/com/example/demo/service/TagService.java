@@ -79,6 +79,7 @@ public class TagService {
         }
         return followedTagsDTO;
     }
+
     public List<TagListingDTO> getFullTagsFollowedByUserDTO(User user) {//When the whole Tag object is needed
         List<Tag> followedTags = getTagsFollowedByUser(user);
         List<TagListingDTO> followedTagsDTO = new ArrayList<>();
