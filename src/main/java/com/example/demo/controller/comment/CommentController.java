@@ -69,6 +69,22 @@ public class CommentController {
         }
     }
 
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId, @RequestHeader String Authorization ){
+        try{
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            Comment comment = commentService.getCommentById(commentId);
+            if(!comment.getUser().getId().equals(user.getId())){
+                throw new Exception("You are not the owner of this comment");
+            }
+            commentService.deleteComment(comment);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
 
 
