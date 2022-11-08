@@ -5,24 +5,35 @@ import com.example.demo.model.Comment;
 import com.example.demo.model.Tag;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class CommentListingDTO {
     private Long id;
     private String text;
     private Long postId;
+    private Long userId;
 
     private TagListingDTO[] tags;
 
-    public CommentListingDTO(Long id, String text, Long postId, TagListingDTO[] tags) {
+    public CommentListingDTO(Long id, String text, Long postId, Long userId, TagListingDTO[] tags) {
         this.id = id;
         this.text = text;
         this.postId = postId;
         this.tags = tags;
+        this.userId = userId;
     }
 
     public static CommentListingDTO fromComment(Comment comment) {
-        return new CommentListingDTO(comment.getId(), comment.getText(), comment.getPost().getId(), generateTags(comment.getTags()));
+        return new CommentListingDTO(comment.getId(), comment.getText(), comment.getPost().getId(), comment.getUser().getId(), generateTags(comment.getTags()));
+    }
+
+    public static List<CommentListingDTO> fromComments(List<Comment> comments) {
+        List<CommentListingDTO> commentListingDTOS = new ArrayList<>();
+        for(Comment comment : comments){
+            commentListingDTOS.add(fromComment(comment));
+        }
+        return commentListingDTOS;
     }
 
     public TagListingDTO[] getTags() {
@@ -55,6 +66,14 @@ public class CommentListingDTO {
 
     public void setPostId(Long postId) {
         this.postId = postId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     private static TagListingDTO[] generateTags(Set<Tag> tags) {

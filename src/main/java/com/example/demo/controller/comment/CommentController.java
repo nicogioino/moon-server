@@ -1,6 +1,7 @@
 package com.example.demo.controller.comment;
 
 import com.example.demo.dto.comment.CommentDTO;
+import com.example.demo.dto.comment.CommentListingDTO;
 import com.example.demo.dto.error.ErrorDTO;
 import com.example.demo.dto.post.PostDTO;
 import com.example.demo.dto.post.PostListingDTO;
@@ -50,6 +51,19 @@ public class CommentController {
             Post post = postService.getPostById(postId);
             Comment comment = commentService.create(possibleComment, user, tags, post);
             return new ResponseEntity<>(CommentDTO.fromComment(comment), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/{postId}")
+    public ResponseEntity<?> getAllComments(@PathVariable("postId") Long postId, @RequestHeader String Authorization ){
+        try{
+            String email = jwtUtil.extractEmail(Authorization);
+            User user = userService.findUserByEmail(email);
+            Post post = postService.getPostById(postId);
+            List<Comment> comments = commentService.getAllComments(post);
+            return new ResponseEntity<>(CommentListingDTO.fromComments(comments), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }

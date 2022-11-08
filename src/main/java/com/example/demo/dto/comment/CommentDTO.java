@@ -17,7 +17,7 @@ public class CommentDTO {
     }
 
     public static CommentListingDTO fromComment(Comment comment) {
-        return new CommentListingDTO(comment.getId(), comment.getText(), comment.getPost().getId(), generateTags(comment.getTags()));
+        return new CommentListingDTO(comment.getId(), comment.getText(), comment.getPost().getId(), comment.getUser().getId(),generateTags(comment.getTags()));
     }
 
     public String[] getTags() {
