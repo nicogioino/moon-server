@@ -22,7 +22,7 @@ public class Vote extends BaseEntity {
 
     public Vote(User user, Comment comment, VoteType voteType) {
         this.user = user;
-        this.comment = post;
+        this.comment = comment;
         this.voteType = voteType;
     }
 
@@ -42,4 +42,4 @@ public class Vote extends BaseEntity {
 
     public void setVoteType(VoteType voteType) {this.voteType = voteType;}
 }
-}
+
