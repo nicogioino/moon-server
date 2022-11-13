@@ -42,7 +42,6 @@ public class CommentController {
         try{
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
-            commentInputValidator.checkCreateComment(possibleComment);
             List<Tag> tags = tagService.createTags(possibleComment.getTags(), user);
             Post post = postService.getPostById(postId);
             Comment comment = commentService.create(possibleComment, user, tags, post);

@@ -8,6 +8,7 @@ import com.example.demo.model.Tag;
 import com.example.demo.model.User;
 import com.example.demo.repository.CommentRepository;
 import com.example.demo.repository.PostRepository;
+import com.example.demo.validators.CommentInputValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,9 @@ public class CommentService {
         this.commentRepository = commentRepository;
     }
 
-    public Comment create(CommentDTO commentDTO, User user, List<Tag> tags, Post post) {
+    public Comment create(CommentDTO commentDTO, User user, List<Tag> tags, Post post) throws Exception {
+        CommentInputValidator validator = new CommentInputValidator();
+        validator.checkCreateComment(commentDTO);
         Comment comment = new Comment(commentDTO.getText(), user, post);
         comment.getTags().addAll(tags);
         return commentRepository.save(comment);

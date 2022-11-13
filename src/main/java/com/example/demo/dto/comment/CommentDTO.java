@@ -20,6 +20,7 @@ public class CommentDTO {
         return new CommentListingDTO(comment.getId(), comment.getText(), comment.getPost().getId(), comment.getUser().getId(),generateTags(comment.getTags()));
     }
 
+
     public String[] getTags() {
         return tags;
     }
