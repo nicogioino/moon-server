@@ -78,6 +78,14 @@ public class CommentListingDTO {
         this.userId = userId;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     private static TagListingDTO[] generateTags(Set<Tag> tags) {
         ArrayList<TagListingDTO> arrayedTags = new ArrayList<>();
         for(Tag tag : tags){
