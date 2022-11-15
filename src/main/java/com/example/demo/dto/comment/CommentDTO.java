@@ -16,8 +16,8 @@ public class CommentDTO {
         this.tags = tags;
     }
 
-    public static CommentListingDTO fromComment(Comment comment) {
-        return new CommentListingDTO(comment.getId(), comment.getText(), comment.getPost().getId(), comment.getUser().getId(),generateTags(comment.getTags()), comment.getUser().getUsername());
+    public static CommentListingDTO fromComment(Comment comment, VoteDTO voteDTO) {
+        return new CommentListingDTO(comment.getId(), comment.getText(), comment.getPost().getId(), generateTags(comment.getTags()),voteDTO, comment.getUser());
     }
 
 
