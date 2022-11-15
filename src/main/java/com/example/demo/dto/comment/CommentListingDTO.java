@@ -13,19 +13,21 @@ public class CommentListingDTO {
     private String text;
     private Long postId;
     private Long userId;
+    private String username;
 
     private TagListingDTO[] tags;
 
-    public CommentListingDTO(Long id, String text, Long postId, Long userId, TagListingDTO[] tags) {
+    public CommentListingDTO(Long id, String text, Long postId, Long userId, TagListingDTO[] tags, String username) {
         this.id = id;
         this.text = text;
         this.postId = postId;
         this.tags = tags;
         this.userId = userId;
+        this.username = username;
     }
 
     public static CommentListingDTO fromComment(Comment comment) {
-        return new CommentListingDTO(comment.getId(), comment.getText(), comment.getPost().getId(), comment.getUser().getId(), generateTags(comment.getTags()));
+        return new CommentListingDTO(comment.getId(), comment.getText(), comment.getPost().getId(), comment.getUser().getId(), generateTags(comment.getTags()), comment.getUser().getUsername());
     }
 
     public static List<CommentListingDTO> fromComments(List<Comment> comments) {
@@ -74,6 +76,14 @@ public class CommentListingDTO {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     private static TagListingDTO[] generateTags(Set<Tag> tags) {
