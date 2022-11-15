@@ -42,11 +42,19 @@ public class Comment extends BaseEntity {
     @JoinColumn(name="post_id", nullable=false)
     private Post post;
 
-    public Comment(String text, User user, Post post) {
+
+    public Comment(Long id, String text, User user, Post post) {
         this.id = id;
         this.text = text;
         this.deleted = false;
         this.tags = tags;
+        this.user = user;
+        this.post = post;
+    }
+
+    public Comment(String text, User user, Post post) {
+        this.text = text;
+        this.deleted = false;
         this.user = user;
         this.post = post;
     }
@@ -59,9 +67,7 @@ public class Comment extends BaseEntity {
         this.post = post;
     }
 
-    public Comment() {
-
-    }
+    public Comment() {}
 
     public Long getId() {
         return id;

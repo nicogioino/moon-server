@@ -10,6 +10,7 @@ import com.example.demo.repository.CommentRepository;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.validators.CommentInputValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,11 +30,19 @@ public class CommentService {
         validator.checkCreateComment(commentDTO);
         Comment comment = new Comment(commentDTO.getText(), user, post);
         comment.getTags().addAll(tags);
-        return commentRepository.save(comment);
+        commentRepository.save(comment);
+        return comment;
     }
-
-    public List<Comment> getAllComments(Post post) {
-        return commentRepository.findAllCommentsInPost(post.getId())
+    public Comment createWithId(Long id, CommentDTO commentDTO, User user, List<Tag> tags, Post post) throws Exception {
+        CommentInputValidator validator = new CommentInputValidator();
+        validator.checkCreateComment(commentDTO);
+        Comment comment = new Comment(id,commentDTO.getText(), user, post);
+        comment.getTags().addAll(tags);
+        commentRepository.save(comment);
+        return comment;
+    }
+    public List<Comment> getAllComments(Long id) {
+        return commentRepository.findAllCommentsInPost(id, Sort.by(Sort.Direction.DESC, "createdAt"))
                 .orElseThrow(() -> new RuntimeException("No comments found"));
     }
 

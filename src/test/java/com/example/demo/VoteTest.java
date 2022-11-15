@@ -86,7 +86,6 @@ public class VoteTest {
         assertNotNull(downvote);
         assertEquals(VoteType.DOWNVOTE, downvote.getVoteType());
         assertEquals(0, voteService.countVotesByType(1L, VoteType.UPVOTE));
-
     }
 
     @Test

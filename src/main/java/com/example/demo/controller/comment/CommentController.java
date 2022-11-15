@@ -1,5 +1,6 @@
 package com.example.demo.controller.comment;
 
+import com.example.demo.dto.comment.CommentWithVotes;
 import com.example.demo.dto.comment.VoteDTO;
 import com.example.demo.dto.comment.CommentDTO;
 import com.example.demo.dto.comment.CommentListingDTO;
@@ -45,20 +46,21 @@ public class CommentController {
             List<Tag> tags = tagService.createTags(possibleComment.getTags(), user);
             Post post = postService.getPostById(postId);
             Comment comment = commentService.create(possibleComment, user, tags, post);
-            return new ResponseEntity<>(CommentDTO.fromComment(comment), HttpStatus.CREATED);
+            return new ResponseEntity<>(CommentDTO.fromComment(comment, voteService.countVotesByCommentId(comment.getId())), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<?> getAllComments(@PathVariable("postId") Long postId, @RequestHeader String Authorization ){
+    public ResponseEntity<?> getAllComments(@PathVariable("postId") Long postId, @RequestHeader String Authorization){
         try{
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
             Post post = postService.getPostById(postId);
-            List<Comment> comments = commentService.getAllComments(post);
-            return new ResponseEntity<>(CommentListingDTO.fromComments(comments), HttpStatus.OK);
+            List<Comment> comments = commentService.getAllComments(post.getId());
+            List<CommentWithVotes> commentsWithVotes = voteService.getVotesForComments(comments);
+            return new ResponseEntity<>(CommentListingDTO.fromComments(commentsWithVotes), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
