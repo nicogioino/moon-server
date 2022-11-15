@@ -3,7 +3,6 @@ package com.example.demo.dto.comment;
 import com.example.demo.dto.tag.TagListingDTO;
 import com.example.demo.model.Comment;
 import com.example.demo.model.Tag;
-import com.example.demo.model.VoteType;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -17,8 +16,8 @@ public class CommentDTO {
         this.tags = tags;
     }
 
-    public static CommentListingDTO fromComment(Comment comment, VoteDTO voteDTO) {
-        return new CommentListingDTO(comment.getId(), comment.getText(), comment.getPost().getId(),generateTags(comment.getTags()), voteDTO,comment.getUser());
+    public static CommentListingDTO fromComment(Comment comment) {
+        return new CommentListingDTO(comment.getId(), comment.getText(), comment.getPost().getId(), comment.getUser().getId(),generateTags(comment.getTags()), comment.getUser().getUsername());
     }
 
 
