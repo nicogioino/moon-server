@@ -25,7 +25,6 @@ public class FollowService {
            throw new Error("You can't follow a user that you already follow");
        }else{
            Follow follow = new Follow(follower, possibleFollowed);
-           System.out.println(follow.getFollowed().getEmail());
            return followRepository.save(follow);
        }
     }
