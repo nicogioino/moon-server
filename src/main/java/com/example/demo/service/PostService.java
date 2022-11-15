@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -58,8 +59,8 @@ public class PostService {
         }
     }
 
-    public Post[] getAllPosts(Long[] usersId, Long userId){
-        return postRepository.allPostsFrom(usersId, userId, Sort.by(Sort.Direction.DESC, "createdAt") );
+    public Post[] getAllPosts(Long[] usersId, Long userId, List<Tag> followedTags) {
+        return postRepository.allPostsFrom(usersId, userId,followedTags, Sort.by(Sort.Direction.DESC, "createdAt") );
     }
 
     public Post[] getPostsFrom(Long userId){

@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -61,7 +62,8 @@ public class PostController {
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
             Long[] usersId = followService.findUsersId(user);
-            Post[] posts = postService.getAllPosts(usersId, user.getId());
+            List<Tag> followedTags = tagService.getTagsFollowedByUser(user);
+            Post[] posts = postService.getAllPosts(usersId, user.getId(),followedTags);
             ReactsListingDTO[] reacts = reactService.getReacts(posts);
             return new ResponseEntity<>(PostListingDTO.fromPosts(posts,reacts), HttpStatus.CREATED);
         } catch (Exception e) {

@@ -69,7 +69,8 @@ public class TagService {
                 followedTags.add(tag);
             }
         }
-        return followedTags;}
+        return followedTags;
+    }
 
     public List<TagNameDTO> getTagsFollowedByUserDTO(User user) {//For Reacts. Returns only tag name
         List<Tag> followedTags = getTagsFollowedByUser(user);
