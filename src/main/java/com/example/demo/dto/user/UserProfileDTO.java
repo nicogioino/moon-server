@@ -27,7 +27,6 @@ public class UserProfileDTO {
         userProfileDTO.setPosts(PostListingDTO.fromPosts(posts, reacts));
         userProfileDTO.setFollowers(followers);
         userProfileDTO.setFollowing(following);
-
         userProfileDTO.setFollowedTags(tagsFollowed);
         return userProfileDTO;
     }

@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.comment.CommentListingDTO;
+import com.example.demo.dto.comment.CommentWithVotes;
 import com.example.demo.dto.comment.VoteDTO;
 import com.example.demo.model.Comment;
 import com.example.demo.model.User;
@@ -9,6 +10,7 @@ import com.example.demo.model.VoteType;
 import com.example.demo.repository.VoteRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -69,12 +71,20 @@ public class VoteService {
     public Long countVotesByType(Long commentId, VoteType voteType) {
         return voteRepository.countByCommentIdAndVoteType(commentId, voteType);
     }
-    public CommentListingDTO[] getCommentsByVoteType(User user, VoteType voteType) {
+    public CommentListingDTO[] getCommentsByVoteType(User user, VoteType voteType) throws Exception {
         List<Comment> comments = voteRepository.findByUserIdAndVoteType(user.getId(), voteType);
         CommentListingDTO[] commentListingDTOS = new CommentListingDTO[comments.size()];
         for (int i = 0; i < comments.size(); i++) {
-            commentListingDTOS[i] =  CommentListingDTO.fromComment(comments.get(i));
+            commentListingDTOS[i] =  CommentListingDTO.fromComment(comments.get(i),countVotesByCommentId(comments.get(i).getId()));
         }
         return commentListingDTOS;
+    }
+
+    public List<CommentWithVotes> getVotesForComments(List<Comment> comments) throws Exception {
+        ArrayList<CommentWithVotes> arr = new ArrayList<>();
+        for(Comment comment: comments){
+            arr.add(new CommentWithVotes(countVotesByCommentId(comment.getId()), comment));
+        }
+        return arr;
     }
 }

@@ -107,7 +107,6 @@ public class UserController {
     public ResponseEntity<?> unfollow(@RequestHeader String Authorization, @RequestBody FollowDTO followDTO) {
         try {
             User possibleFollowed = followInputValidator.userExists(userService, followDTO);
-            System.out.println(possibleFollowed);
             String email = jwtUtil.extractEmail(Authorization);
             User follower = userService.findUserByEmail(email);
             Follow follow = followService.unfollow(follower, possibleFollowed);

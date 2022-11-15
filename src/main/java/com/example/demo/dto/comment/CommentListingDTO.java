@@ -1,8 +1,10 @@
 package com.example.demo.dto.comment;
 
 import com.example.demo.dto.tag.TagListingDTO;
+import com.example.demo.dto.user.UserListingDTO;
 import com.example.demo.model.Comment;
 import com.example.demo.model.Tag;
+import com.example.demo.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,28 +14,30 @@ public class CommentListingDTO {
     private Long id;
     private String text;
     private Long postId;
-    private Long userId;
-    private String username;
+    private UserListingDTO user;
+    private VoteDTO votes;
+
 
     private TagListingDTO[] tags;
 
-    public CommentListingDTO(Long id, String text, Long postId, Long userId, TagListingDTO[] tags, String username) {
+    public CommentListingDTO(Long id, String text, Long postId, TagListingDTO[] tags, VoteDTO voteDTO, User user) {
         this.id = id;
         this.text = text;
         this.postId = postId;
         this.tags = tags;
-        this.userId = userId;
-        this.username = username;
+        this.user = UserListingDTO.fromUser(user);
+        this.votes = voteDTO;
     }
 
-    public static CommentListingDTO fromComment(Comment comment) {
-        return new CommentListingDTO(comment.getId(), comment.getText(), comment.getPost().getId(), comment.getUser().getId(), generateTags(comment.getTags()), comment.getUser().getUsername());
+    public static CommentListingDTO fromComment(Comment comment, VoteDTO voteDTO) {
+        return new CommentListingDTO(comment.getId(), comment.getText(), comment.getPost().getId(),  generateTags(comment.getTags()),voteDTO, comment.getUser());
     }
 
-    public static List<CommentListingDTO> fromComments(List<Comment> comments) {
+
+    public static List<CommentListingDTO> fromComments(List<CommentWithVotes> comments) {
         List<CommentListingDTO> commentListingDTOS = new ArrayList<>();
-        for(Comment comment : comments){
-            commentListingDTOS.add(fromComment(comment));
+        for(CommentWithVotes comment : comments){
+            commentListingDTOS.add(fromComment(comment.comment,comment.voteDTO));
         }
         return commentListingDTOS;
     }
@@ -70,20 +74,21 @@ public class CommentListingDTO {
         this.postId = postId;
     }
 
-    public Long getUserId() {
-        return userId;
+
+    public UserListingDTO getUser() {
+        return user;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(UserListingDTO user) {
+        this.user = user;
     }
 
-    public String getUsername() {
-        return username;
+    public VoteDTO getVotes() {
+        return votes;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setVotes(VoteDTO votes) {
+        this.votes = votes;
     }
 
     private static TagListingDTO[] generateTags(Set<Tag> tags) {
