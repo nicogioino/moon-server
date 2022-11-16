@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.comment.CommentListingDTO;
+import com.example.demo.dto.comment.CommentWithType;
 import com.example.demo.dto.comment.CommentWithVotes;
 import com.example.demo.dto.comment.VoteDTO;
 import com.example.demo.model.Comment;
@@ -67,6 +68,13 @@ public class VoteService {
 
         return new VoteDTO(upvotes, downvotes);
     }
+    public VoteType countVotesByCommentIdAndUser(Long commentId, Long userId) throws Exception {
+        Vote existingVote = voteRepository.findVoteByUserIdAndVoteTypeAAndCommentId(userId, commentId);
+        if (existingVote != null ) {
+            return existingVote.getVoteType();
+        }
+        return VoteType.NOTVOTED;
+    }
 
     public Long countVotesByType(Long commentId, VoteType voteType) {
         return voteRepository.countByCommentIdAndVoteType(commentId, voteType);
@@ -80,10 +88,10 @@ public class VoteService {
         return commentListingDTOS;
     }
 
-    public List<CommentWithVotes> getVotesForComments(List<Comment> comments) throws Exception {
-        ArrayList<CommentWithVotes> arr = new ArrayList<>();
+    public List<CommentWithType> getVotesForComments(List<Comment> comments, User user) throws Exception {
+        ArrayList<CommentWithType> arr = new ArrayList<>();
         for(Comment comment: comments){
-            arr.add(new CommentWithVotes(countVotesByCommentId(comment.getId()), comment));
+            arr.add(new CommentWithType(countVotesByCommentIdAndUser(comment.getId(),user.getId() ), comment));
         }
         return arr;
     }

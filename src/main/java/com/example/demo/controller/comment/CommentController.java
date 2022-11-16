@@ -1,9 +1,6 @@
 package com.example.demo.controller.comment;
 
-import com.example.demo.dto.comment.CommentWithVotes;
-import com.example.demo.dto.comment.VoteDTO;
-import com.example.demo.dto.comment.CommentDTO;
-import com.example.demo.dto.comment.CommentListingDTO;
+import com.example.demo.dto.comment.*;
 import com.example.demo.dto.error.ErrorDTO;
 import com.example.demo.model.*;
 import com.example.demo.security.util.JwtUtil;
@@ -59,8 +56,8 @@ public class CommentController {
             User user = userService.findUserByEmail(email);
             Post post = postService.getPostById(postId);
             List<Comment> comments = commentService.getAllComments(post.getId());
-            List<CommentWithVotes> commentsWithVotes = voteService.getVotesForComments(comments);
-            return new ResponseEntity<>(CommentListingDTO.fromComments(commentsWithVotes), HttpStatus.OK);
+            List<CommentWithType> commentsWithVotes = voteService.getVotesForComments(comments, user);
+            return new ResponseEntity<>(CommentListingTypeDTO.fromComments(commentsWithVotes), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
