@@ -91,7 +91,16 @@ public class VoteService {
     public List<CommentWithType> getVotesForComments(List<Comment> comments, User user) throws Exception {
         ArrayList<CommentWithType> arr = new ArrayList<>();
         for(Comment comment: comments){
-            arr.add(new CommentWithType(countVotesByCommentIdAndUser(comment.getId(),user.getId() ), comment));
+            VoteType voteType = countVotesByCommentIdAndUser(comment.getId(),user.getId());
+            arr.add(new CommentWithType(voteType, comment,countVotesByCommentId(comment.getId())));
+        }
+        return arr;
+    }
+
+    public List<CommentWithVotes> getVotesForComments(List<Comment> comments) throws Exception {
+        ArrayList<CommentWithVotes> arr = new ArrayList<>();
+        for(Comment comment: comments){
+            arr.add(new CommentWithVotes(countVotesByCommentId(comment.getId()), comment));
         }
         return arr;
     }

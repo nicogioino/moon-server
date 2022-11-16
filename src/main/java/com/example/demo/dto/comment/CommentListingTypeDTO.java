@@ -18,27 +18,31 @@ public class CommentListingTypeDTO {
     private UserListingDTO user;
     private VoteType vote;
 
+    private VoteDTO votes;
+
+
 
     private TagListingDTO[] tags;
 
-    public CommentListingTypeDTO(Long id, String text, Long postId, TagListingDTO[] tags, VoteType voteDTO, User user) {
+    public CommentListingTypeDTO(Long id, String text, Long postId, TagListingDTO[] tags, VoteType voteDTO, User user, VoteDTO votes) {
         this.id = id;
         this.text = text;
         this.postId = postId;
         this.tags = tags;
         this.user = UserListingDTO.fromUser(user);
         this.vote = voteDTO;
+        this.votes = votes;
     }
 
-    public static CommentListingTypeDTO fromComment(Comment comment, VoteType voteDTO) {
-        return new CommentListingTypeDTO(comment.getId(), comment.getText(), comment.getPost().getId(),  generateTags(comment.getTags()),voteDTO, comment.getUser());
+    public static CommentListingTypeDTO fromComment(Comment comment, VoteType voteType, VoteDTO voteDTO) {
+        return new CommentListingTypeDTO(comment.getId(), comment.getText(), comment.getPost().getId(),  generateTags(comment.getTags()),voteType, comment.getUser(),voteDTO);
     }
 
 
     public static List<CommentListingTypeDTO> fromComments(List<CommentWithType> comments) {
         List<CommentListingTypeDTO> commentListingDTOS = new ArrayList<>();
         for(CommentWithType comment : comments){
-            commentListingDTOS.add(fromComment(comment.comment,comment.vote));
+            commentListingDTOS.add(fromComment(comment.comment,comment.vote, comment.voteDTO));
         }
         return commentListingDTOS;
     }
@@ -99,5 +103,9 @@ public class CommentListingTypeDTO {
         }
         TagListingDTO[] returned = new TagListingDTO[arrayedTags.size()];
         return arrayedTags.toArray(returned);
+    }
+
+    public VoteDTO getVotes() {
+        return votes;
     }
 }
