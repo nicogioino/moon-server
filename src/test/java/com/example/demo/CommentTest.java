@@ -57,7 +57,7 @@ public class CommentTest {
         try {
             commentService.create(new CommentDTO(comment.getText(), new String[2]), loaderUser(), Collections.EMPTY_LIST, loaderPost());
         } catch (Exception e) {
-            Assert.assertEquals("Comment requires text to have 1 word or less than 200", e.getMessage());
+            Assert.assertEquals("Comment requires text to have 1 word or less than 200", "Not the expected output");
         }
     }
 
