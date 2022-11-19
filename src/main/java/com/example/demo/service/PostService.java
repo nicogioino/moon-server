@@ -112,4 +112,18 @@ public class PostService {
         return post;
 
     }
+
+    public Post[] getPostsFromTags(Long[] tagsId, Post[] posts) {
+        ArrayList<Post> postsFromTags = new ArrayList<>();
+        for (Post post : posts) {
+            for (Tag tag : post.getTags()) {
+                for (Long tagId : tagsId) {
+                    if (tag.getId().equals(tagId)) {
+                        postsFromTags.add(post);
+                    }
+                }
+            }
+        }
+        return postsFromTags.toArray(new Post[0]);
+    }
 }

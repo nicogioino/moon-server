@@ -98,6 +98,11 @@ public class TagService {
     }
 
 
-
-
+    public Long[] getTagsId(List<TagListingDTO> tags) {
+        Long[] tagsId = new Long[tags.size()];
+        for(int i = 0; i < tags.size(); i++) {
+            tagsId[i] = tags.get(i).getId();
+        }
+        return tagsId;
+    }
 }
