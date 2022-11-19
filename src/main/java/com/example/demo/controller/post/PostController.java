@@ -4,6 +4,7 @@ import com.example.demo.dto.error.ErrorDTO;
 import com.example.demo.dto.post.PostDTO;
 import com.example.demo.dto.post.PostListingDTO;
 import com.example.demo.dto.react.ReactsListingDTO;
+import com.example.demo.dto.tag.TagListingDTO;
 import com.example.demo.model.Post;
 import com.example.demo.model.Tag;
 import com.example.demo.model.User;
@@ -16,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -60,10 +63,20 @@ public class PostController {
         try{
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
-            Long[] usersId = followService.findUsersId(user);
+            Long[] usersId = followService.findUsersId(user); // followed users
+
             Post[] posts = postService.getAllPosts(usersId, user.getId());
-            ReactsListingDTO[] reacts = reactService.getReacts(posts);
-            return new ResponseEntity<>(PostListingDTO.fromPosts(posts,reacts), HttpStatus.CREATED);
+            List<Post> followedPosts = new ArrayList<>(Arrays.asList(posts));
+            // followed post ids
+
+            List<TagListingDTO> tags = tagService.getFullTagsFollowedByUserDTO(user);
+            Long[] tagsId = tagService.getTagsId(tags);
+            List<Post> followedTagsPosts = tagService.getPostsWithTagIds(tagsId);
+
+            Post[] postsWithTagsAndFollowedUsers = postService.mergePostLists(followedPosts, followedTagsPosts);
+
+            ReactsListingDTO[] reacts = reactService.getReacts(postsWithTagsAndFollowedUsers);
+            return new ResponseEntity<>(PostListingDTO.fromPosts(postsWithTagsAndFollowedUsers,reacts), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
@@ -165,5 +178,7 @@ public class PostController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+
 
 }

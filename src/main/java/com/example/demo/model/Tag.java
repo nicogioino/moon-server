@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -36,6 +37,15 @@ public class Tag extends BaseEntity{
             }
     )
     private Set<User> followers = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            },
+            mappedBy = "tags")
+    @JsonIgnore
+    private Set<Post> posts = new HashSet<>();
 
     public Tag(Long id, String name) {
         this.id = id;

@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.tag.TagListingDTO;
 import com.example.demo.dto.tag.TagNameDTO;
+import com.example.demo.model.Post;
 import com.example.demo.model.Tag;
 import com.example.demo.model.User;
 import com.example.demo.repository.TagRepository;
@@ -98,6 +99,16 @@ public class TagService {
     }
 
 
+    public Long[] getTagsId(List<TagListingDTO> tags) {
+        Long[] tagsId = new Long[tags.size()];
+        for(int i = 0; i < tags.size(); i++) {
+            tagsId[i] = tags.get(i).getId();
+        }
+        return tagsId;
+    }
 
+    public List<Post> getPostsWithTagIds(Long[] tagIds){
+        return tagRepository.getPostsByTagsId(tagIds);
 
+    }
 }

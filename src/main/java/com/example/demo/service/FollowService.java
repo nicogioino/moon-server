@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.follow.FollowersDTO;
 import com.example.demo.model.Follow;
 import com.example.demo.model.User;
 import com.example.demo.repository.FollowRepository;
@@ -50,13 +51,25 @@ public class FollowService {
         return ids;
     }
 
-    public List<User> getFollowedUsers(User user) {
-        Optional<List<User>> users = followRepository.findFollowedUsersByFollowerId(user.getId());
-        return users.orElseGet(ArrayList::new);
+    public List<FollowersDTO> getFollowedUsers(User user) {
+        List<FollowersDTO> followersDTOS = new ArrayList<>();
+        Optional<List<User>> followedUsers = followRepository.findFollowedUsersByFollowerId(user.getId());
+        if(followedUsers.isPresent()){
+            for (User followedUser : followedUsers.get()) {
+                followersDTOS.add(new FollowersDTO(followedUser.getId(), followedUser.getUsername()));
+            }
+        }
+        return followersDTOS;
     }
-    public List<User> getFollowers(User user) {
-        Optional<List<User>> users = followRepository.findFollowersByFollowedId(user.getId());
-        return users.orElseGet(ArrayList::new);
+    public List<FollowersDTO> getFollowers(User user) {
+        List<FollowersDTO> followersDTOS = new ArrayList<>();
+        Optional<List<User>> followedUsers = followRepository.findFollowersByFollowedId(user.getId());
+        if(followedUsers.isPresent()){
+            for (User followedUser : followedUsers.get()) {
+                followersDTOS.add(new FollowersDTO(followedUser.getId(), followedUser.getUsername()));
+            }
+        }
+            return followersDTOS;
     }
 
     // Returns the IDs of users that follow me.

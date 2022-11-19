@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import com.example.demo.model.Post;
 import com.example.demo.model.Tag;
 import com.example.demo.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,6 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     Tag getTagByName(String name);
     Tag getTagById(Long id);
 
+    @Query("SELECT t.posts FROM Tag t WHERE t.id in :id")
+    List<Post> getPostsByTagsId(Long[] id);
 }
