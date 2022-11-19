@@ -13,7 +13,4 @@ public interface PostRepository  extends JpaRepository<Post, Long> {
     Post[] postsFrom(Long userId, Sort sort);
 
 
-
-
-
 }

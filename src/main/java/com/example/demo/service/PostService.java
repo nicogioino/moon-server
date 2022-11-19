@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.post.PostDTO;
+import com.example.demo.model.BaseEntity;
 import com.example.demo.model.Post;
 import com.example.demo.model.Tag;
 import com.example.demo.model.User;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -113,6 +116,26 @@ public class PostService {
 
     }
 
+    public List<Post> getPostsWithTags(Long[] tagsIds){
+        List<Post> posts = postRepository.findAll();
+        List<Post> postsWithTags = new ArrayList<>();
+        for (Post post : posts) {
+            for (Long tagId : tagsIds) {
+                if(!post.isDeleted() && isTagIdInPostTags(post.getTags(), tagId)){
+                    postsWithTags.add(post);
+                }
+            }
+        }
+        return postsWithTags;
+    }
+
+    private boolean isTagIdInPostTags(Set<Tag> tags, Long tagId) {
+        for (Tag tag : tags) {
+            if(tag.getId() == tagId) return true;
+        }
+        return false;
+    }
+
     public Post[] getPostsFromTags(Long[] tagsId, Post[] posts) {
         ArrayList<Post> postsFromTags = new ArrayList<>();
         for (Post post : posts) {
@@ -126,4 +149,20 @@ public class PostService {
         }
         return postsFromTags.toArray(new Post[0]);
     }
+
+    public Post[] mergePostLists(List<Post> list1, List<Post> list2){
+        List<Post> list1Copy = new ArrayList<>(list1);
+        for (Post x : list2){
+            if (!list1Copy.contains(x))
+                list1Copy.add(x);
+        }
+        List<Post> sortedList = sortListByDescendingDate(list1Copy);
+        return sortedList.toArray(new Post[0]);
+    }
+
+    private List<Post> sortListByDescendingDate(List<Post> list){
+        list.sort(Comparator.comparing(Post::getCreatedAt).reversed());
+        return list;
+    }
+
 }

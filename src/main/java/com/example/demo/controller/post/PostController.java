@@ -63,15 +63,20 @@ public class PostController {
         try{
             String email = jwtUtil.extractEmail(Authorization);
             User user = userService.findUserByEmail(email);
-            Long[] usersId = followService.findUsersId(user);
+            Long[] usersId = followService.findUsersId(user); // followed users
+
             Post[] posts = postService.getAllPosts(usersId, user.getId());
+            List<Post> followedPosts = new ArrayList<>(Arrays.asList(posts));
+            // followed post ids
+
             List<TagListingDTO> tags = tagService.getFullTagsFollowedByUserDTO(user);
             Long[] tagsId = tagService.getTagsId(tags);
-            Post[] postsWithTags = postService.getPostsFromTags(tagsId, posts);
-            Post[] postsWithTagsAndFollowedUsers = Arrays.copyOf(postsWithTags, postsWithTags.length + posts.length);
+            List<Post> followedTagsPosts = tagService.getPostsWithTagIds(tagsId);
 
-            ReactsListingDTO[] reacts = reactService.getReacts(posts);
-            return new ResponseEntity<>(PostListingDTO.fromPosts(posts,reacts), HttpStatus.CREATED);
+            Post[] postsWithTagsAndFollowedUsers = postService.mergePostLists(followedPosts, followedTagsPosts);
+
+            ReactsListingDTO[] reacts = reactService.getReacts(postsWithTagsAndFollowedUsers);
+            return new ResponseEntity<>(PostListingDTO.fromPosts(postsWithTagsAndFollowedUsers,reacts), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(ErrorDTO.fromMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
@@ -173,5 +178,7 @@ public class PostController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+
 
 }
