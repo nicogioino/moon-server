@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.follow.UsersFollowersDTO;
 import com.example.demo.model.Follow;
 import com.example.demo.model.User;
 import com.example.demo.repository.FollowRepository;
@@ -21,12 +22,12 @@ public class FollowService {
         this.followRepository = followRepository;
     }
     public Follow follow(User follower, User possibleFollowed) {
-       if( checkIfFollowExists(follower, possibleFollowed).isPresent()){
-           throw new Error("You can't follow a user that you already follow");
-       }else{
-           Follow follow = new Follow(follower, possibleFollowed);
-           return followRepository.save(follow);
-       }
+        if( checkIfFollowExists(follower, possibleFollowed).isPresent()){
+            throw new Error("You can't follow a user that you already follow");
+        }else{
+            Follow follow = new Follow(follower, possibleFollowed);
+            return followRepository.save(follow);
+        }
     }
 
     private Optional<Follow> checkIfFollowExists(User follower, User possibleFollowed) {
@@ -36,9 +37,9 @@ public class FollowService {
     public Follow unfollow(User follower, User possibleFollowed) {
         Optional<Follow> follow = checkIfFollowExists(follower, possibleFollowed) ;
         if(follow.isPresent()){
-           Follow realFollowed = follow.get();
-           realFollowed.deleteRelation();
-           return followRepository.save(realFollowed);
+            Follow realFollowed = follow.get();
+            realFollowed.deleteRelation();
+            return followRepository.save(realFollowed);
         }else{
             throw new Error("You can't unfollow a user that you don't follow");
         }
@@ -50,13 +51,25 @@ public class FollowService {
         return ids;
     }
 
-    public List<User> getFollowedUsers(User user) {
-        Optional<List<User>> users = followRepository.findFollowedUsersByFollowerId(user.getId());
-        return users.orElseGet(ArrayList::new);
+    public List<UsersFollowersDTO> getFollowedUsers(User user) {
+        List<UsersFollowersDTO> UsersFollowersDTOS = new ArrayList<>();
+        Optional<List<User>> followedUsers = followRepository.findFollowedUsersByFollowerId(user.getId());
+        if(followedUsers.isPresent()){
+            for (User followedUser : followedUsers.get()) {
+                UsersFollowersDTOS.add(new UsersFollowersDTO(followedUser.getId(), followedUser.getUsername()));
+            }
+        }
+        return UsersFollowersDTOS;
     }
-    public List<User> getFollowers(User user) {
-        Optional<List<User>> users = followRepository.findFollowersByFollowedId(user.getId());
-        return users.orElseGet(ArrayList::new);
+    public List<UsersFollowersDTO> getFollowers(User user) {
+        List<UsersFollowersDTO> UsersFollowersDTOS = new ArrayList<>();
+        Optional<List<User>> followedUsers = followRepository.findFollowersByFollowedId(user.getId());
+        if(followedUsers.isPresent()){
+            for (User followedUser : followedUsers.get()) {
+                UsersFollowersDTOS.add(new UsersFollowersDTO(followedUser.getId(), followedUser.getUsername()));
+            }
+        }
+        return UsersFollowersDTOS;
     }
 
     // Returns the IDs of users that follow me.
